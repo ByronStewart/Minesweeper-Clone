@@ -1,3 +1,4 @@
 django
 mixer
 djangorestframework
+djangorestframework-simplejwt
