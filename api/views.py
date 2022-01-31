@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView, GenericAPIView
-from api.models import Users
+from rest_framework.generics import CreateAPIView
+from api.models import User
 from api.serializers import RegisterSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -10,7 +10,7 @@ from rest_framework import status
 
 
 class RegisterView(CreateAPIView):
-    model = Users
+    model = User
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):

@@ -1,9 +1,9 @@
 from mixer.backend.django import Mixer
 
-from api.models import Users
+from api.models import User
 
 
-def mixUser(**kwargs) -> Users:
+def mixUser(**kwargs) -> User:
     mixer = Mixer(commit=False)
-    user = mixer.blend('api.Users', **kwargs)
-    return Users.objects.create_user(user)
+    user = mixer.blend('api.User', **kwargs)
+    return User.objects.create_user(user)

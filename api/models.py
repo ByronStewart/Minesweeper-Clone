@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin, UserManag
 # Create your models here.
 
 
-class Users(AbstractUser, PermissionsMixin):
+class User(AbstractUser, PermissionsMixin):
     username = models.CharField(db_index=True, max_length=255, unique=True)
     email = models.EmailField(db_index=True, unique=True, blank=False)
     is_active = models.BooleanField(default=True)
