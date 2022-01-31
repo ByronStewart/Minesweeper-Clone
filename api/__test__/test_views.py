@@ -1,11 +1,41 @@
+from urllib import response
 from django.test import TestCase
 from mixer.backend.django import mixer
 
 from api.models import User
-from ..views import RegisterView
+from ..views import LoginRefreshTokenView, LoginView, RegisterView
 from rest_framework.test import APIRequestFactory
 from rest_framework import status
-from .utils import mixUser
+
+
+class TestLoginView(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.view = LoginView.as_view()
+        cls.req = cls.req = APIRequestFactory().post("/", {
+            "email": "test@gmail.com",
+            "password": "password"
+        })
+
+    def test_it_should_return_a_token_when_credentials_are_correct(self):
+        user = mixer.blend("api.User", email="test@gmail.com")
+        user.set_password("password")
+        user.save()
+        response = self.view(self.req)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("access", response.data)
+        self.assertIn("refresh", response.data)
+
+    def test_it_should_return_401_if_user_does_not_exist(self):
+        response = self.view(self.req)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_it_should_return_401_if_password_does_not_match(self):
+        user = mixer.blend("api.User", email="test@gmail.com")
+        user.set_password("not_the_password")
+        user.save()
+        response = self.view(self.req)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class TestRegisterView(TestCase):
