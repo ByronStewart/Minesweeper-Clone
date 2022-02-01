@@ -4,11 +4,12 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ProvideAuth } from "./hooks/useAuth";
+import { Router } from "./Router";
 
 ReactDOM.render(
   <React.StrictMode>
     <ProvideAuth>
-      <App />
+      <Router />
     </ProvideAuth>
   </React.StrictMode>,
   document.getElementById("root")

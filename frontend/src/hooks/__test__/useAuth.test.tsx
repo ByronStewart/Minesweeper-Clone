@@ -18,7 +18,7 @@ describe("useAuth tests", () => {
       wrapper,
     });
 
-    result.current.signIn("bob9@test.com", "bob9");
+    result.current.signIn("bob9@test.com", "bob9", () => {});
 
     await waitForNextUpdate({
       timeout: 5000,

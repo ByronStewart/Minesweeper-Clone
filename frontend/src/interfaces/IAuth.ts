@@ -1,8 +1,12 @@
 export interface IAuth {
   user: IUser | false;
   accessToken: string | null;
-  signIn: (email: string, password: string) => Promise<void>;
-  signOut: () => void;
+  signIn: (
+    email: string,
+    password: string,
+    callback: VoidFunction
+  ) => Promise<void>;
+  signOut: (callback?: VoidFunction) => void;
   register: (
     username: string,
     email: string,

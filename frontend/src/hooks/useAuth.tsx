@@ -8,6 +8,7 @@ import {
   IToken,
   IUser,
 } from "../interfaces/IAuth";
+import { Navigate, useLocation } from "react-router-dom";
 
 const authContext = createContext<IAuth>({
   user: false,
@@ -16,6 +17,17 @@ const authContext = createContext<IAuth>({
   signOut: () => {},
   signIn: async (email, password) => {},
 });
+
+export const RequireAuth = ({ children }: { children: JSX.Element }) => {
+  const auth = useAuth();
+  let location = useLocation();
+
+  if (!auth.user) {
+    // redirect to the login page but save the current location from which they were redirected
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  return children;
+};
 
 export const ProvideAuth: React.FC = ({ children }) => {
   const auth = useProvideAuth();
@@ -47,7 +59,11 @@ const useProvideAuth = (): IAuth => {
     console.log("error message", data.detail);
     setUser(false);
   };
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (
+    email: string,
+    password: string,
+    callback: VoidFunction
+  ) => {
     try {
       const response = await fetch(LOGIN_ROUTE, {
         method: "POST",
@@ -62,6 +78,7 @@ const useProvideAuth = (): IAuth => {
       if (response.ok) {
         const data: ILoginSuccessDTO = await response.json();
         handleLoginUser(data);
+        callback();
       } else {
         const error: ILoginFailDTO = await response.json();
         handleLoginError(error, response);
@@ -71,12 +88,13 @@ const useProvideAuth = (): IAuth => {
       signOut();
     }
   };
-  const signOut = () => {
+  const signOut = (callback?: VoidFunction) => {
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
     setUser(false);
     setAccess(null);
     setRefresh(null);
+    if (callback) callback();
   };
   const register = async (
     username: string,
