@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
 import { LOGIN_ROUTE, REGISTER_ROUTE } from "../utils/constants";
 import {
@@ -7,7 +7,7 @@ import {
   ILoginSuccessDTO,
   IToken,
   IUser,
-} from "../interfaces/Iauth";
+} from "../interfaces/IAuth";
 
 const authContext = createContext<IAuth>({
   user: false,
@@ -32,9 +32,11 @@ const useProvideAuth = (): IAuth => {
   const [refresh, setRefresh] = useState<string | null>(null);
 
   const handleLoginUser = (data: ILoginSuccessDTO) => {
-    const tokenDetails: IToken = jwt_decode(data.access);
     setAccess(data.access);
     setRefresh(data.refresh);
+    localStorage.setItem("access", data.access);
+    localStorage.setItem("refresh", data.refresh);
+    const tokenDetails: IToken = jwt_decode(data.access);
     setUser({
       username: tokenDetails.username,
       id: tokenDetails.user_id,
@@ -70,6 +72,8 @@ const useProvideAuth = (): IAuth => {
     }
   };
   const signOut = () => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
     setUser(false);
     setAccess(null);
     setRefresh(null);
@@ -103,6 +107,19 @@ const useProvideAuth = (): IAuth => {
       signOut();
     }
   };
+  useEffect(() => {
+    const accessToken = localStorage.getItem("access");
+    const refreshToken = localStorage.getItem("refresh");
+    if (accessToken) {
+      const decodedToken: IToken = jwt_decode(accessToken);
+      setUser({
+        id: decodedToken.user_id,
+        username: decodedToken.username,
+      });
+      setAccess(accessToken);
+      setRefresh(refreshToken);
+    }
+  }, []);
 
   return {
     user,
