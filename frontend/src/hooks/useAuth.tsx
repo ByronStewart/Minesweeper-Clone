@@ -1,21 +1,19 @@
 import { createContext, useContext, useState } from "react";
-
-interface IAuth {
-  user: IUser | false;
-  signIn: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
-}
-
-interface IUser {
-  username: string;
-  id: number;
-}
+import jwt_decode from "jwt-decode";
+import { LOGIN_ROUTE, REGISTER_ROUTE } from "../utils/constants";
+import {
+  IAuth,
+  ILoginFailDTO,
+  ILoginSuccessDTO,
+  IToken,
+  IUser,
+} from "../interfaces/Iauth";
 
 const authContext = createContext<IAuth>({
   user: false,
-  register: async (email, password) => {},
-  signOut: async () => {},
+  accessToken: null,
+  register: async (username, email, password) => {},
+  signOut: () => {},
   signIn: async (email, password) => {},
 });
 
@@ -30,27 +28,85 @@ export const useAuth = () => {
 
 const useProvideAuth = (): IAuth => {
   const [user, setUser] = useState<IUser | false>(false);
+  const [access, setAccess] = useState<string | null>(null);
+  const [refresh, setRefresh] = useState<string | null>(null);
 
-  const signIn = async (email: string, password: string) => {
+  const handleLoginUser = (data: ILoginSuccessDTO) => {
+    const tokenDetails: IToken = jwt_decode(data.access);
+    setAccess(data.access);
+    setRefresh(data.refresh);
     setUser({
-      username: "Billy",
-      id: 1,
+      username: tokenDetails.username,
+      id: tokenDetails.user_id,
     });
   };
-
-  const signOut = async () => {
+  const handleLoginError = (data: ILoginFailDTO, response: Response) => {
+    console.log("status", response.status);
+    console.log("error message", data.detail);
     setUser(false);
   };
-
-  const register = async (email: string, password: string) => {
-    setUser({
-      username: "Bob",
-      id: 2,
-    });
+  const signIn = async (email: string, password: string) => {
+    try {
+      const response = await fetch(LOGIN_ROUTE, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+      if (response.ok) {
+        const data: ILoginSuccessDTO = await response.json();
+        handleLoginUser(data);
+      } else {
+        const error: ILoginFailDTO = await response.json();
+        handleLoginError(error, response);
+      }
+    } catch (error) {
+      console.error(error);
+      signOut();
+    }
+  };
+  const signOut = () => {
+    setUser(false);
+    setAccess(null);
+    setRefresh(null);
+  };
+  const register = async (
+    username: string,
+    email: string,
+    password: string
+  ) => {
+    try {
+      const response = await fetch(REGISTER_ROUTE, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+      if (response.ok) {
+        const data: ILoginSuccessDTO = await response.json();
+        handleLoginUser(data);
+      } else {
+        const error: ILoginFailDTO = await response.json();
+        handleLoginError(error, response);
+      }
+    } catch (error) {
+      console.error(error);
+      signOut();
+    }
   };
 
   return {
     user,
+    accessToken: access,
     signIn,
     signOut,
     register,

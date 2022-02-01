@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'api'
 ]
@@ -48,7 +49,14 @@ REST_FRAMEWORK = {
     ]
 }
 
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost.*$",
+]
+
+CORS_URLS_REGEX = r"^/api/.*$"
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

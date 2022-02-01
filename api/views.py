@@ -28,8 +28,8 @@ class RegisterView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
-        refresh = RefreshToken.for_user(serializer.instance)
-
+        refresh = UsernameTokenObtainPairSerializer.get_token(
+            serializer.instance)
         token = {
             'refresh': str(refresh),
             'access': str(refresh.access_token),
