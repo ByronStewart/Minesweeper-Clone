@@ -19,7 +19,7 @@ function App() {
           <>
             <button
               className="px-4 py-2 border bg-slate-400 border-slate-800"
-              onClick={() => auth.signOut}
+              onClick={() => auth.signOut()}
             >
               logout
             </button>

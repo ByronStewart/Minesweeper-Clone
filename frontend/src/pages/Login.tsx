@@ -1,17 +1,22 @@
 import { FormEvent, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Location, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-
+type LocationState = {
+  from: Location;
+};
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const location = useLocation();
+  const location = useLocation();
+  const locationState = location.state as LocationState;
+  const from = locationState?.from?.pathname || "/";
   //const from = location.state?.from?.pathname || "/";
+  const navigate = useNavigate();
   const auth = useAuth();
   const login = (e: FormEvent) => {
     e.preventDefault();
     auth.signIn(email, password, () => {
-      Navigate({ to: "/", replace: true });
+      navigate(from, { replace: true });
     });
   };
   return (
