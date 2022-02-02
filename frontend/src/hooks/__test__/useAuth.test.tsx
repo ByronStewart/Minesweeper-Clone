@@ -32,7 +32,7 @@ describe("useAuth tests", () => {
   it.skip("should register a user", () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
     act(() => {
-      result.current.register("billy", "billy@gmail.com", "abcd");
+      result.current.register("billy", "billy@gmail.com", "abcd", () => {});
     });
     expect(result.current.user).toStrictEqual({
       username: "Bob",

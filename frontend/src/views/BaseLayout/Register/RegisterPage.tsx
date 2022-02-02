@@ -1,14 +1,24 @@
 import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 
 const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const { register } = useAuth();
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    register(username, email, password);
+    register(username, email, password, (err) => {
+      if (err) {
+        alert(err);
+        return;
+      }
+      navigate("/", {
+        replace: true,
+      });
+    });
   };
   return (
     <div>

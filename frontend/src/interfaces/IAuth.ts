@@ -1,16 +1,19 @@
+import { IErrorMessage } from "./IMessage";
+
 export interface IAuth {
   user: IUser | false;
   accessToken: string | null;
   signIn: (
     email: string,
     password: string,
-    callback: VoidFunction
+    callback: (err?: IErrorMessage) => void
   ) => Promise<void>;
-  signOut: (callback?: VoidFunction) => void;
+  signOut: (callback?: (err?: IErrorMessage) => {}) => void;
   register: (
     username: string,
     email: string,
-    password: string
+    password: string,
+    callback: (err?: IErrorMessage) => void
   ) => Promise<void>;
 }
 

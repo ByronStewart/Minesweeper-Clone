@@ -9,7 +9,11 @@ const LoginPage: React.FC = () => {
   const from = (location.state as { from?: Location })?.from?.pathname || "/";
 
   const login = (email: string, password: string) => {
-    auth.signIn(email, password, () => {
+    auth.signIn(email, password, (err) => {
+      if (err) {
+        alert(err.msg);
+        return;
+      }
       navigate(from, { replace: true });
     });
   };

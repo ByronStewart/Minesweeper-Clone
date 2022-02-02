@@ -10,13 +10,14 @@ import {
   IUser,
 } from "../interfaces/IAuth";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { IErrorMessage } from "../interfaces/IMessage";
 
 const authContext = createContext<IAuth>({
   user: false,
   accessToken: null,
-  register: async (username, email, password) => {},
+  register: async () => {},
   signOut: () => {},
-  signIn: async (email, password) => {},
+  signIn: async () => {},
 });
 
 export const RequireAuth = () => {
@@ -55,20 +56,36 @@ const useProvideAuth = (): IAuth => {
       id: tokenDetails.user_id,
     });
   };
-  const handleLoginError = (data: ILoginFailDTO, response: Response) => {
-    console.log("status", response.status);
-    console.log("error message", data.detail);
+
+  const handleLoginError = (
+    data: ILoginFailDTO,
+    response: Response
+  ): IErrorMessage => {
     setUser(false);
+    return {
+      msg: data.detail,
+      status: response.status,
+    };
   };
 
-  const handleRegisterError = (error: IRegisterFailDTO, response: Response) => {
-    return;
+  const handleRegisterError = (
+    error: IRegisterFailDTO,
+    response: Response
+  ): IErrorMessage => {
+    let msgList = "";
+    for (const err in error) {
+      msgList += err + ", ";
+    }
+    return {
+      msg: `The following details were not provided: ${msgList}`,
+      status: response.status,
+    };
   };
 
   const signIn = async (
     email: string,
     password: string,
-    callback: VoidFunction
+    callback: (err?: IErrorMessage) => void
   ) => {
     try {
       const response = await fetch(LOGIN_ROUTE, {
@@ -87,25 +104,30 @@ const useProvideAuth = (): IAuth => {
         callback();
       } else {
         const error: ILoginFailDTO = await response.json();
-        handleLoginError(error, response);
+        const errorMessage: IErrorMessage = handleLoginError(error, response);
+        callback(errorMessage);
       }
     } catch (error) {
       console.error(error);
       signOut();
+      callback({ msg: "something went wrong", status: -1 });
     }
   };
-  const signOut = (callback?: VoidFunction) => {
+  const signOut = (callback?: (err?: IErrorMessage) => {}) => {
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
     setUser(false);
     setAccess(null);
     setRefresh(null);
-    if (callback) callback();
+    if (callback) {
+      callback();
+    }
   };
   const register = async (
     username: string,
     email: string,
-    password: string
+    password: string,
+    callback: (err?: IErrorMessage) => void
   ) => {
     try {
       const response = await fetch(REGISTER_ROUTE, {
@@ -122,13 +144,15 @@ const useProvideAuth = (): IAuth => {
       if (response.ok) {
         const data: ILoginSuccessDTO = await response.json();
         handleLoginUser(data);
+        callback();
       } else {
         const error: IRegisterFailDTO = await response.json();
-        handleRegisterError(error, response);
+        const errorMessage = handleRegisterError(error, response);
+        callback(errorMessage);
       }
     } catch (error) {
-      console.error(error);
       signOut();
+      callback({ msg: "something went wrong", status: -1 });
     }
   };
   useEffect(() => {
