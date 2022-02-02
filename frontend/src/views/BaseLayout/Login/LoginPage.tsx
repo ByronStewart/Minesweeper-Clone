@@ -1,8 +1,8 @@
 import { Location, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { LoginForm } from "./LoginForm";
+import { LoginForm } from "../../../components/Forms/LoginForm";
+import { useAuth } from "../../../hooks/useAuth";
 
-const Login: React.FC = () => {
+const LoginPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const auth = useAuth();
@@ -22,4 +22,4 @@ const Login: React.FC = () => {
     </div>
   );
 };
-export default Login;
+export default LoginPage;

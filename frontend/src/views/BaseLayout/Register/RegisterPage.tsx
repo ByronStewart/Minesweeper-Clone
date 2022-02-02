@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 
 const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState("");

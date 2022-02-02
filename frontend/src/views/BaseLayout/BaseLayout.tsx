@@ -1,10 +1,10 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { DefaultHeader } from "./DefaultHeader";
+import { DefaultHeader } from "../../components/layouts/DefaultHeader";
 
 interface Props {}
 
-export const BaseLayout: React.FC<Props> = () => {
+const BaseLayout: React.FC<Props> = () => {
   return (
     <div>
       <DefaultHeader />
@@ -12,3 +12,4 @@ export const BaseLayout: React.FC<Props> = () => {
     </div>
   );
 };
+export default BaseLayout;
