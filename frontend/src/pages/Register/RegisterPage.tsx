@@ -1,29 +1,28 @@
 import { FormEvent, useState } from "react";
-import { Location, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-type LocationState = {
-  from: Location;
-};
-export const Login: React.FC = () => {
+import { useAuth } from "../../hooks/useAuth";
+
+const RegisterPage: React.FC = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const location = useLocation();
-  const locationState = location.state as LocationState;
-  const from = locationState?.from?.pathname || "/";
-  //const from = location.state?.from?.pathname || "/";
-  const navigate = useNavigate();
-  const auth = useAuth();
-  const login = (e: FormEvent) => {
+  const { register } = useAuth();
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    auth.signIn(email, password, () => {
-      navigate(from, { replace: true });
-    });
+    register(username, email, password);
   };
   return (
     <div>
-      <h1>This is the login page</h1>
-      <hr />
-      <form onSubmit={login}>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
         <div>
           <label htmlFor="email">Email</label>
           <input
@@ -32,7 +31,6 @@ export const Login: React.FC = () => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            autoFocus
           />
         </div>
         <div>
@@ -46,9 +44,11 @@ export const Login: React.FC = () => {
           />
         </div>
         <div>
-          <button type="submit">Login</button>
+          <button type="submit">Register</button>
         </div>
       </form>
     </div>
   );
 };
+
+export default RegisterPage;

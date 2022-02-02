@@ -1,34 +1,30 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
-import { useAuth } from "./hooks/useAuth";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ProvideAuth, RequireAuth } from "./hooks/useAuth";
+import { BaseLayout } from "./components/layouts/BaseLayout";
+import { About } from "./pages/About/About";
+import { Index } from "./pages/Index";
+import Login from "./pages/Login/LoginPage";
+import { ProtectedPage } from "./pages/ProtectedPage";
+import RegisterPage from "./pages/Register/RegisterPage";
 
 function App() {
-  const auth = useAuth();
   return (
-    <div className="mx-5">
-      <div className="bg-slate-100 mb-5">
-        {!auth.user && (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-            <Link to="/about">About</Link>
-          </>
-        )}
-
-        {auth.user && (
-          <>
-            <button
-              className="px-4 py-2 border bg-slate-400 border-slate-800"
-              onClick={() => auth.signOut()}
-            >
-              logout
-            </button>
-            <Link to="/protected">Protected</Link>
-          </>
-        )}
-      </div>
-      <Outlet />
-    </div>
+    <ProvideAuth>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<BaseLayout />}>
+            <Route path="/" element={<Index />}></Route>
+            <Route path="/about" element={<About />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/register" element={<RegisterPage />}></Route>
+            <Route element={<RequireAuth />}>
+              <Route path="/protected" element={<ProtectedPage />} />
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ProvideAuth>
   );
 }
 

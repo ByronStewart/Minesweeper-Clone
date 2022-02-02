@@ -28,6 +28,12 @@ export interface ILoginSuccessDTO {
   refresh: string;
 }
 
+export interface IRegisterFailDTO {
+  username?: string;
+  email?: string;
+  password?: string;
+}
+
 export interface ILoginFailDTO {
   detail: string;
 }

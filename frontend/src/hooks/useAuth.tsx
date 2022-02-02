@@ -5,10 +5,11 @@ import {
   IAuth,
   ILoginFailDTO,
   ILoginSuccessDTO,
+  IRegisterFailDTO,
   IToken,
   IUser,
 } from "../interfaces/IAuth";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 const authContext = createContext<IAuth>({
   user: false,
@@ -18,7 +19,7 @@ const authContext = createContext<IAuth>({
   signIn: async (email, password) => {},
 });
 
-export const RequireAuth = ({ children }: { children: JSX.Element }) => {
+export const RequireAuth = () => {
   const auth = useAuth();
   let location = useLocation();
 
@@ -26,7 +27,7 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
     // redirect to the login page but save the current location from which they were redirected
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  return children;
+  return <Outlet />;
 };
 
 export const ProvideAuth: React.FC = ({ children }) => {
@@ -59,6 +60,11 @@ const useProvideAuth = (): IAuth => {
     console.log("error message", data.detail);
     setUser(false);
   };
+
+  const handleRegisterError = (error: IRegisterFailDTO, response: Response) => {
+    return;
+  };
+
   const signIn = async (
     email: string,
     password: string,
@@ -117,8 +123,8 @@ const useProvideAuth = (): IAuth => {
         const data: ILoginSuccessDTO = await response.json();
         handleLoginUser(data);
       } else {
-        const error: ILoginFailDTO = await response.json();
-        handleLoginError(error, response);
+        const error: IRegisterFailDTO = await response.json();
+        handleRegisterError(error, response);
       }
     } catch (error) {
       console.error(error);
