@@ -1,14 +1,20 @@
 import React, { useEffect, useRef } from "react";
 import { sampleSize, flatten } from "lodash";
 
-const numRows = 10;
-const numCols = 10;
+const numRows = 20;
+const numCols = 15;
 const fillstyle = "grey";
 const strokestyle = "#000";
 const size = 30;
-const numMines = 10;
+const numMines = 30;
 
 type Props = {};
+
+enum visibilityState {
+  FLAGGED,
+  REVEALED,
+  HIDDEN,
+}
 
 class Tile {
   x: number;
@@ -18,7 +24,7 @@ class Tile {
   cx: number;
   cy: number;
   size: number;
-  revealed = false;
+  visibility = visibilityState.HIDDEN;
   numAdjacentMines = 0;
   flagged = false;
   constructor(x: number, y: number, i: number, j: number, size: number) {
@@ -31,75 +37,99 @@ class Tile {
     this.cy = y + size / 2;
   }
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.strokeStyle = strokestyle;
-    ctx.fillStyle = fillstyle;
-    ctx.strokeRect(this.x, this.y, this.x + size, this.y + size);
-    if (this.revealed) {
-      switch (this.numAdjacentMines) {
-        case -1:
-          ctx.fillStyle = "red";
-          break;
-        case 0:
-          ctx.fillStyle = "grey";
-          break;
-        case 1:
-          ctx.fillStyle = "blue";
-          break;
-        case 2:
-          ctx.fillStyle = "green";
-          break;
-        case 3:
-          ctx.fillStyle = "pink";
-          break;
-        case 4:
-          ctx.fillStyle = "cyan";
-          break;
-        case 5:
-          ctx.fillStyle = "fuchsia";
-          break;
-        case 6:
-          ctx.fillStyle = "aquamarine";
-          break;
-        case 7:
-          ctx.fillStyle = "beige";
-          break;
-        case 8:
-          ctx.fillStyle = "yellow";
-          break;
-        default:
-          ctx.fillStyle = fillstyle;
-          break;
-      }
-    }
-    ctx.fillRect(this.x, this.y, this.x + this.size, this.y + this.size);
+    switch (this.visibility) {
+      case visibilityState.FLAGGED:
+        ctx.strokeStyle = strokestyle;
+        ctx.fillStyle = "gold";
+        ctx.strokeRect(this.x, this.y, this.x + size, this.y + size);
+        ctx.fillRect(this.x, this.y, this.x + this.size, this.y + this.size);
+        ctx.fillStyle = "#000";
+        ctx.fillText("F", this.cx, this.cy);
+        break;
 
-    // text
-    if (this.flagged) {
-      ctx.fillStyle = "#000";
-      ctx.fillText("F", this.cx, this.cy);
-    } else if (this.revealed) {
-      ctx.fillText(this.numAdjacentMines.toString(), this.cx, this.cy);
+      case visibilityState.HIDDEN:
+        ctx.strokeStyle = strokestyle;
+        ctx.fillStyle = fillstyle;
+        ctx.strokeRect(this.x, this.y, this.x + size, this.y + size);
+        ctx.fillRect(this.x, this.y, this.x + this.size, this.y + this.size);
+        break;
+
+      case visibilityState.REVEALED:
+        ctx.strokeStyle = strokestyle;
+        switch (this.numAdjacentMines) {
+          case -1:
+            ctx.fillStyle = "red";
+            break;
+          case 0:
+            ctx.fillStyle = "blanchedalmond";
+            break;
+          case 1:
+            ctx.fillStyle = "blue";
+            break;
+          case 2:
+            ctx.fillStyle = "green";
+            break;
+          case 3:
+            ctx.fillStyle = "pink";
+            break;
+          case 4:
+            ctx.fillStyle = "cyan";
+            break;
+          case 5:
+            ctx.fillStyle = "fuchsia";
+            break;
+          case 6:
+            ctx.fillStyle = "aquamarine";
+            break;
+          case 7:
+            ctx.fillStyle = "beige";
+            break;
+          case 8:
+            ctx.fillStyle = "yellow";
+            break;
+          default:
+            ctx.fillStyle = fillstyle;
+            break;
+        }
+        ctx.fillRect(this.x, this.y, this.x + this.size, this.y + this.size);
+        ctx.strokeRect(this.x, this.y, this.x + size, this.y + size);
+        if (this.numAdjacentMines !== 0) {
+          ctx.fillStyle = "#000";
+          ctx.fillText(this.numAdjacentMines.toString(), this.cx, this.cy);
+        }
+        break;
+
+      default:
+        break;
     }
   }
   reveal() {
-    this.revealed = true;
-    this.flagged = false;
-    if (this.numAdjacentMines === -1) {
-      return false;
-    }
-    return true;
+    this.visibility = visibilityState.REVEALED;
+    return this.numAdjacentMines;
   }
   flag() {
-    if (this.revealed) {
-      return false;
+    switch (this.visibility) {
+      case visibilityState.REVEALED:
+        return false;
+
+      case visibilityState.FLAGGED:
+        this.visibility = visibilityState.HIDDEN;
+        return true;
+
+      case visibilityState.HIDDEN:
+        this.visibility = visibilityState.FLAGGED;
+        return true;
+
+      default:
+        return false;
     }
-    this.flagged = !this.flagged;
   }
 }
 
 class Minesweeperboard {
   tiles: Tile[][] = [];
   minesRemaining: number;
+  unseenTilesRemaining: number;
   constructor(
     numRows: number,
     numCols: number,
@@ -107,7 +137,8 @@ class Minesweeperboard {
     numMines: number
   ) {
     this.minesRemaining = numMines;
-
+    this.unseenTilesRemaining = numRows * numCols - numMines;
+    console.log(this.unseenTilesRemaining);
     // Empty grid
     let i = 0;
     let j = 0;
@@ -120,7 +151,6 @@ class Minesweeperboard {
       i++;
       j = 0;
     }
-
     // fill grid with mines
     const mines = sampleSize(flatten(this.tiles), numMines);
     for (const tile of mines) {
@@ -132,7 +162,6 @@ class Minesweeperboard {
       }
     }
   }
-
   getNeighbours(i: number, j: number) {
     const options = [
       [-1, -1],
@@ -155,6 +184,54 @@ class Minesweeperboard {
     }
     return neighbours;
   }
+  /**
+   * Reveal tiles with DFS
+   */
+  revealTiles(i: number, j: number) {
+    const currentTile = this.tiles[i][j];
+
+    // hit a mine
+    if (currentTile.numAdjacentMines === -1) {
+      currentTile.reveal();
+      return this.gameOver();
+    }
+
+    // already seen
+    if (currentTile.visibility === visibilityState.REVEALED) {
+      return;
+    }
+
+    let q = [currentTile];
+    let seen = new Set<string>();
+    while (q.length !== 0) {
+      const tile = q.pop() as Tile;
+      const coord = `(${tile.i}, ${tile.j})`;
+      if (seen.has(coord)) {
+        continue;
+      }
+      seen.add(coord);
+      const minesAdj = tile.reveal();
+      if (minesAdj === 0) {
+        const neighbors = this.getNeighbours(tile.i, tile.j);
+        for (const n of neighbors) {
+          if (n.visibility !== visibilityState.REVEALED) {
+            q.push(n);
+          }
+        }
+      }
+    }
+    this.unseenTilesRemaining -= seen.size;
+    console.log(this.unseenTilesRemaining);
+    if (this.unseenTilesRemaining === 0) {
+      this.gameWon();
+    }
+  }
+  gameOver() {
+    alert("game over");
+  }
+  gameWon() {
+    alert("congratulations you have won");
+  }
 
   draw(ctx: CanvasRenderingContext2D) {
     for (let i = 0; i < this.tiles.length; i++) {
@@ -167,15 +244,17 @@ class Minesweeperboard {
 }
 
 function handleReveal(e: MouseEvent, board: Minesweeperboard) {
+  // ensure it is a left click
+  if (e.button !== 0) {
+    return;
+  }
   const i = Math.floor(e.offsetX / size);
   const j = Math.floor(e.offsetY / size);
-  console.log(`(${i}, ${j})`);
-  board.tiles[i][j].reveal();
+  board.revealTiles(i, j);
 }
 function handleFlag(e: MouseEvent, board: Minesweeperboard) {
   const i = Math.floor(e.offsetX / size);
   const j = Math.floor(e.offsetY / size);
-  console.log(`(${i}, ${j})`);
   board.tiles[i][j].flag();
 }
 
@@ -184,15 +263,14 @@ const MinesweeperPage = (props: Props) => {
 
   useEffect(() => {
     let animation: number | undefined = undefined;
-    if (canvasRef.current) {
+    const canvas = canvasRef.current;
+    if (canvas) {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
         ctx.font = "15px Arial";
         const board = new Minesweeperboard(numRows, numCols, size, numMines);
-        canvasRef.current.addEventListener("click", (e) =>
-          handleReveal(e, board)
-        );
-        canvasRef.current.addEventListener("contextmenu", (e) => {
+        canvas.addEventListener("mouseup", (e) => handleReveal(e, board));
+        canvas.addEventListener("contextmenu", (e) => {
           e.preventDefault();
           handleFlag(e, board);
         });
