@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ProvideAuth, RequireAuth } from "./hooks/useAuth";
 import AboutPage from "./views/BaseLayout/AboutPage/AboutPage";
 import BaseLayout from "./views/BaseLayout/BaseLayout";
+import GameLayout from "./views/BaseLayout/GameLayout/GameLayout";
+import MinesweeperPage from "./views/BaseLayout/GameLayout/MinesweeperPage/MinesweeperPage";
 import IndexPage from "./views/BaseLayout/IndexPage/IndexPage";
 import LoginPage from "./views/BaseLayout/Login/LoginPage";
 import RegisterPage from "./views/BaseLayout/Register/RegisterPage";
@@ -20,6 +22,9 @@ function App() {
             <Route path="/register" element={<RegisterPage />}></Route>
             <Route element={<RequireAuth />}>
               <Route path="/protected" element={<ProtectedPage />} />
+            </Route>
+            <Route path="/game" element={<GameLayout />}>
+              <Route path="minesweeper" element={<MinesweeperPage />}></Route>
             </Route>
           </Route>
         </Routes>

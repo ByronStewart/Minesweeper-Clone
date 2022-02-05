@@ -30,6 +30,12 @@ export const DefaultHeader: React.FC<Props> = () => {
       >
         About{" "}
       </Link>
+      <Link
+        className="px-4 py-2 inline-block border border-slate-500"
+        to="/game"
+      >
+        Game{" "}
+      </Link>
 
       {auth.user && (
         <>
