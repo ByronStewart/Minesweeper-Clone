@@ -1,9 +1,7 @@
 import { flatten, sampleSize } from "lodash";
+import { Tile } from "./Tile";
 
-const fillstyle = "grey";
-const strokestyle = "#000";
-
-enum visibilityState {
+export enum visibilityState {
   FLAGGED,
   REVEALED,
   HIDDEN,
@@ -22,130 +20,18 @@ export enum revealTypes {
 }
 
 interface callbackDetails {
-  timer?: number;
-  gameState?: gameStates;
-}
-
-class Tile {
-  x: number;
-  y: number;
-  i: number;
-  j: number;
-  cx: number;
-  cy: number;
-  size: number;
-  visibility = visibilityState.HIDDEN;
-  numAdjacentMines = 0;
-  flagged = false;
-  constructor(x: number, y: number, i: number, j: number, size: number) {
-    this.size = size;
-    this.i = i;
-    this.j = j;
-    this.x = x;
-    this.y = y;
-    this.cx = x + size / 2;
-    this.cy = y + size / 2;
-  }
-  draw(ctx: CanvasRenderingContext2D, gamestate: gameStates) {
-    switch (this.visibility) {
-      case visibilityState.FLAGGED:
-        ctx.strokeStyle = strokestyle;
-        ctx.fillStyle = "gold";
-        ctx.strokeRect(this.x, this.y, this.x + this.size, this.y + this.size);
-        ctx.fillRect(this.x, this.y, this.x + this.size, this.y + this.size);
-        ctx.fillStyle = "#000";
-        ctx.fillText("F", this.cx, this.cy);
-        break;
-
-      case visibilityState.HIDDEN:
-        ctx.strokeStyle = strokestyle;
-        ctx.fillStyle = fillstyle;
-        ctx.strokeRect(this.x, this.y, this.x + this.size, this.y + this.size);
-        ctx.fillRect(this.x, this.y, this.x + this.size, this.y + this.size);
-        ctx.fillStyle = "#000";
-        ctx.font = "8px Arial";
-        ctx.fillText(`x${this.x},y${this.y}`, this.x + 5, this.y + 10);
-        break;
-
-      case visibilityState.REVEALED:
-        ctx.strokeStyle = strokestyle;
-        switch (this.numAdjacentMines) {
-          case -1:
-            ctx.fillStyle = "red";
-            break;
-          case 0:
-            ctx.fillStyle = "blanchedalmond";
-            break;
-          case 1:
-            ctx.fillStyle = "blue";
-            break;
-          case 2:
-            ctx.fillStyle = "green";
-            break;
-          case 3:
-            ctx.fillStyle = "pink";
-            break;
-          case 4:
-            ctx.fillStyle = "cyan";
-            break;
-          case 5:
-            ctx.fillStyle = "fuchsia";
-            break;
-          case 6:
-            ctx.fillStyle = "aquamarine";
-            break;
-          case 7:
-            ctx.fillStyle = "beige";
-            break;
-          case 8:
-            ctx.fillStyle = "yellow";
-            break;
-          default:
-            ctx.fillStyle = fillstyle;
-            break;
-        }
-        ctx.fillRect(this.x, this.y, this.x + this.size, this.y + this.size);
-        ctx.strokeRect(this.x, this.y, this.x + this.size, this.y + this.size);
-        //if (this.numAdjacentMines !== 0) {
-        ctx.fillStyle = "#000";
-        ctx.fillText(this.numAdjacentMines.toString(), this.cx, this.cy);
-        //}
-        break;
-
-      default:
-        break;
-    }
-  }
-  reveal() {
-    this.visibility = visibilityState.REVEALED;
-    return this.numAdjacentMines;
-  }
-  flag() {
-    switch (this.visibility) {
-      case visibilityState.REVEALED:
-        return false;
-
-      case visibilityState.FLAGGED:
-        this.visibility = visibilityState.HIDDEN;
-        return true;
-
-      case visibilityState.HIDDEN:
-        this.visibility = visibilityState.FLAGGED;
-        return true;
-
-      default:
-        return false;
-    }
-  }
+  timer: number;
+  gameState: gameStates;
+  numMinesRemaining: number;
 }
 
 export class Minesweeperboard {
   tiles: Tile[][] = [];
-  minesRemaining: number;
   unseenTilesRemaining: number;
   timer = 0;
   gameState = gameStates.PENDING;
   callback: (details: callbackDetails) => void;
+
   private timerInterval: number | undefined = undefined;
   private ctx: CanvasRenderingContext2D;
   private numRows: number;
@@ -153,6 +39,7 @@ export class Minesweeperboard {
   private tileSize: number;
   private numMines: number;
   private animationFrameId: number | undefined = undefined;
+  private numFlags = 0;
 
   constructor(
     numRows: number,
@@ -162,7 +49,6 @@ export class Minesweeperboard {
     ctx: CanvasRenderingContext2D,
     callback: (details: callbackDetails) => void
   ) {
-    this.minesRemaining = numMines;
     this.unseenTilesRemaining = numRows * numCols - numMines;
     this.ctx = ctx;
     this.numMines = numMines;
@@ -172,6 +58,14 @@ export class Minesweeperboard {
     this.callback = callback;
     // set up a blank game
     this.setUp();
+  }
+
+  get details() {
+    return {
+      timer: this.timer,
+      gameState: this.gameState,
+      numMinesRemaining: this.numMines - this.numFlags,
+    };
   }
 
   setUp() {
@@ -227,16 +121,15 @@ export class Minesweeperboard {
   }
 
   revealTiles(i: number, j: number, revealType: revealTypes) {
-    console.log(this.gameState);
     switch (this.gameState) {
       case gameStates.PENDING:
         // set the gamestate to running and set the timer interval
         this.gameState = gameStates.RUNNING;
 
-        this.callback({ timer: this.timer });
+        this.callback(this.details);
         this.timerInterval = window.setInterval(() => {
           ++this.timer;
-          this.callback({ timer: this.timer });
+          this.callback(this.details);
         }, 1000);
         break;
       // if the game is running continue
@@ -252,7 +145,13 @@ export class Minesweeperboard {
 
     switch (revealType) {
       case revealTypes.FLAG:
+        if (currentTile.visibility === visibilityState.FLAGGED) {
+          this.numFlags--;
+        } else {
+          this.numFlags++;
+        }
         currentTile.flag();
+        this.callback(this.details);
         break;
 
       case revealTypes.REVEAL:
@@ -263,6 +162,8 @@ export class Minesweeperboard {
           case visibilityState.FLAGGED:
             // if flagged return it to hidden state
             currentTile.visibility = visibilityState.HIDDEN;
+            this.numFlags--;
+            this.callback(this.details);
             return;
 
           case visibilityState.HIDDEN:
@@ -270,7 +171,6 @@ export class Minesweeperboard {
             // check if the player has revealed a mine and return gameover
             if (currentTile.numAdjacentMines === -1) {
               currentTile.reveal();
-              console.log(currentTile);
               return this.gameOver();
             }
 
@@ -289,7 +189,7 @@ export class Minesweeperboard {
               if (minesAdj === 0) {
                 const neighbors = this.getNeighbours(tile.i, tile.j);
                 for (const n of neighbors) {
-                  if (n.visibility !== visibilityState.REVEALED) {
+                  if (n.visibility === visibilityState.HIDDEN) {
                     q.push(n);
                   }
                 }
@@ -311,13 +211,13 @@ export class Minesweeperboard {
   gameOver() {
     this.gameState = gameStates.FINISHEDFAILURE;
     window.clearInterval(this.timerInterval);
-    this.callback({ timer: this.timer, gameState: this.gameState });
+    this.callback(this.details);
   }
 
   gameWon() {
     this.gameState = gameStates.FINISHEDSUCCESS;
     window.clearInterval(this.timerInterval);
-    this.callback({ timer: this.timer, gameState: this.gameState });
+    this.callback(this.details);
   }
 
   draw = () => {
