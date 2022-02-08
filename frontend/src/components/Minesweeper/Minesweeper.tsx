@@ -5,40 +5,46 @@ import {
   revealTypes,
 } from "../../services/Minesweeper/game";
 
+export enum difficultyTypes {
+  BEGINNER = "beginner",
+  INTERMEDIATE = "intermediate",
+  ADVANCED = "advanced",
+}
 interface IMinesweeperOptions {
   numRows: number;
   numCols: number;
   numMines: number;
+  str: difficultyTypes;
 }
 
 const BEGINNER: IMinesweeperOptions = {
   numRows: 9,
   numCols: 9,
   numMines: 10,
+  str: difficultyTypes.BEGINNER,
 };
 
 const INTERMEDIATE: IMinesweeperOptions = {
   numRows: 16,
   numCols: 16,
   numMines: 40,
+  str: difficultyTypes.INTERMEDIATE,
 };
 
 const ADVANCED: IMinesweeperOptions = {
   numRows: 16,
   numCols: 30,
   numMines: 99,
+  str: difficultyTypes.ADVANCED,
 };
 
-enum difficultyTypes {
-  BEGINNER = "beginner",
-  INTERMEDIATE = "intermediate",
-  ADVANCED = "advanced",
-}
 const size = 32;
 
-type Props = {};
+type Props = {
+  onGameWon: (timer: number, difficulty: difficultyTypes) => void;
+};
 
-const Minesweeper: React.FC<Props> = () => {
+const Minesweeper: React.FC<Props> = ({ onGameWon }) => {
   const [gameOptions, setGameOptions] = useState<IMinesweeperOptions>(BEGINNER);
   const [time, setTime] = useState(0);
   const [gameMessage, setGameMessage] = useState("");
@@ -110,6 +116,7 @@ const Minesweeper: React.FC<Props> = () => {
                 break;
               case gameStates.FINISHEDSUCCESS:
                 setGameMessage("YOU'RE A WINNER");
+                onGameWon(timer, gameOptions.str);
                 break;
               default:
                 setGameMessage("");
@@ -131,7 +138,7 @@ const Minesweeper: React.FC<Props> = () => {
       canvas?.removeEventListener("mouseup", ctxMenu);
       boardRef.current?.cleanup();
     };
-  }, [gameOptions, setTime, setGameMessage, handleReveal]);
+  }, [gameOptions, setTime, setGameMessage, handleReveal, onGameWon]);
 
   function changeDifficulty(s: difficultyTypes) {
     switch (s) {
