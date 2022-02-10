@@ -1,11 +1,13 @@
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView
-from api.models import User
-from api.serializers import RegisterSerializer, UsernameTokenObtainPairSerializer
+from rest_framework.generics import CreateAPIView, ListCreateAPIView
+from api.models import MinesweeperScore, User
+from api.permissions import IsOwnerOrReadOnly
+from api.serializers import MinesweeperScoreSerializer, RegisterSerializer, UsernameTokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 # Create your views here.
@@ -36,3 +38,24 @@ class RegisterView(CreateAPIView):
         }
 
         return Response(token, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class MinesweeperScoreListCreateView(ListCreateAPIView):
+    model = MinesweeperScore
+    serializer_class = MinesweeperScoreSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = MinesweeperScore.objects.all()
+
+    def create(self, request):
+        serializer_context = {
+            'owner': request.user,
+            'request': request
+        }
+        serializer_data = request.data.get('score', {})
+        serializer = self.serializer_class(
+            data=serializer_data,
+            context=serializer_context
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
