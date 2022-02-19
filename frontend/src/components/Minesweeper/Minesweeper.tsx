@@ -20,7 +20,7 @@ interface IMinesweeperOptions {
 const BEGINNER: IMinesweeperOptions = {
   numRows: 9,
   numCols: 9,
-  numMines: 10,
+  numMines: 5,
   str: difficultyTypes.BEGINNER,
 };
 
@@ -42,10 +42,25 @@ const size = 32;
 
 type Props = {
   onGameWon: (timer: number, difficulty: difficultyTypes) => void;
+  difficulty: difficultyTypes;
+  setDifficulty: React.Dispatch<React.SetStateAction<difficultyTypes>>;
 };
 
-const Minesweeper: React.FC<Props> = ({ onGameWon }) => {
-  const [gameOptions, setGameOptions] = useState<IMinesweeperOptions>(BEGINNER);
+const Minesweeper: React.FC<Props> = ({
+  onGameWon,
+  difficulty,
+  setDifficulty,
+}) => {
+  const [gameOptions, setGameOptions] = useState<IMinesweeperOptions>(() => {
+    switch (difficulty) {
+      case difficultyTypes.BEGINNER:
+        return BEGINNER;
+      case difficultyTypes.INTERMEDIATE:
+        return INTERMEDIATE;
+      case difficultyTypes.ADVANCED:
+        return ADVANCED;
+    }
+  });
   const [time, setTime] = useState(0);
   const [gameMessage, setGameMessage] = useState("");
   const [numMinesRemaining, setNumMinesRemaining] = useState(
@@ -141,6 +156,7 @@ const Minesweeper: React.FC<Props> = ({ onGameWon }) => {
   }, [gameOptions, setTime, setGameMessage, handleReveal, onGameWon]);
 
   function changeDifficulty(s: difficultyTypes) {
+    setDifficulty(s);
     switch (s) {
       case difficultyTypes.INTERMEDIATE:
         resetGame(INTERMEDIATE);

@@ -12,7 +12,9 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
     register(username, email, password, (err) => {
       if (err) {
-        alert(err);
+        const message = err.msg;
+        const status = err.status;
+        alert(message);
         return;
       }
       navigate("/", {

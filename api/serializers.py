@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from api.models import MinesweeperScore, User
 
@@ -22,6 +23,7 @@ class UsernameTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class MinesweeperScoreSerializer(ModelSerializer):
+    owner = serializers.CharField(source="owner.username", read_only=True)
 
     def create(self, validated_data):
         owner = self.context.get('owner', None)
@@ -29,5 +31,5 @@ class MinesweeperScoreSerializer(ModelSerializer):
 
     class Meta:
         model = MinesweeperScore
-        fields = ('owner', 'time', 'difficulty', 'created_at')
+        fields = ('owner', 'time', 'difficulty', 'created_at', 'id')
         read_only_fields = ('owner', 'created_at')
