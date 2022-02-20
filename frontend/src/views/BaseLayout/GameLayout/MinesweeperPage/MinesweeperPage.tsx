@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { json } from "stream/consumers";
 import Minesweeper, {
   difficultyTypes,
 } from "../../../../components/Minesweeper/Minesweeper";
@@ -9,10 +8,7 @@ import {
   minesweeperAPIDifficultyTypes,
   POSTMinesweeperScoreDTO,
 } from "../../../../interfaces/MinesweeperScoreDTO";
-import {
-  BASE_API_URL,
-  MINESWEEPER_SCORE_ROUTE,
-} from "../../../../utils/constants";
+import { MINESWEEPER_SCORE_ROUTE } from "../../../../utils/constants";
 
 interface IHistory {
   player: string;
@@ -61,7 +57,6 @@ const MinesweeperPage: React.FC<Props> = () => {
           time: timer,
         },
       };
-      debugger;
       const response = await fetch(MINESWEEPER_SCORE_ROUTE, {
         method: "POST",
         headers: {

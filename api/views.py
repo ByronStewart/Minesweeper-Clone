@@ -18,7 +18,8 @@ class LoginView(TokenObtainPairView):
 
 
 class LoginRefreshTokenView(TokenRefreshView):
-    serializer_class = UsernameTokenObtainPairSerializer
+    # serializer_class = UsernameTokenObtainPairSerializer
+    pass
 
 
 class RegisterView(CreateAPIView):

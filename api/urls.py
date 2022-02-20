@@ -6,7 +6,7 @@ from .views import LoginRefreshTokenView, LoginView, MinesweeperScoreListCreateV
 
 urlpatterns = [
     path('login', LoginView.as_view(), name='login'),
-    path('login/refresh', LoginRefreshTokenView.as_view(), name='login_refresh'),
+    path('refresh', LoginRefreshTokenView.as_view(), name='login_refresh'),
     path('register', RegisterView.as_view(), name='register'),
     path('minesweeper_scores',
          MinesweeperScoreListCreateView.as_view(), name='minesweeper')

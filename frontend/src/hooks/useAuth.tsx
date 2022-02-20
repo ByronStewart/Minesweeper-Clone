@@ -1,6 +1,17 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import jwt_decode from "jwt-decode";
-import { LOGIN_ROUTE, REGISTER_ROUTE } from "../utils/constants";
+import {
+  LOGIN_ROUTE,
+  REFRESH_INTERVAL,
+  REFRESH_ROUTE,
+  REGISTER_ROUTE,
+} from "../utils/constants";
 import {
   IAuth,
   ILoginFailDTO,
@@ -9,6 +20,7 @@ import {
   IToken,
   IUser,
 } from "../interfaces/IAuth";
+
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { IErrorMessage } from "../interfaces/IMessage";
 
@@ -155,19 +167,50 @@ const useProvideAuth = (): IAuth => {
       callback({ msg: "something went wrong", status: -1 });
     }
   };
-  useEffect(() => {
-    const accessToken = localStorage.getItem("access");
-    const refreshToken = localStorage.getItem("refresh");
-    if (accessToken) {
-      const decodedToken: IToken = jwt_decode(accessToken);
-      setUser({
-        id: decodedToken.user_id,
-        username: decodedToken.username,
-      });
-      setAccess(accessToken);
-      setRefresh(refreshToken);
+
+  const refreshTokenFromAPI = useCallback(async (refreshToken: string) => {
+    const response = await fetch(REFRESH_ROUTE, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        refresh: refreshToken,
+      }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        access: data.access,
+        refresh: refreshToken,
+      };
     }
+    return Promise.reject({ error: "unauthorized" });
   }, []);
+
+  // runs on page load, get the refresh token from local storage and obtain a new access token if exists
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refresh");
+    let refreshHandler: NodeJS.Timer;
+    if (refreshToken) {
+      const decodedToken: IToken = jwt_decode(refreshToken);
+      // if it has not expired we will obtain a new access token and log the user in
+      if (decodedToken.exp * 1000 > Date.now()) {
+        refreshTokenFromAPI(refreshToken).then((tokens) => {
+          handleLoginUser(tokens);
+          // set a interval to refresh the access token periodically
+          refreshHandler = setInterval(() => {
+            refreshTokenFromAPI(refreshToken).then((tokens) =>
+              handleLoginUser(tokens)
+            );
+          }, REFRESH_INTERVAL);
+        });
+      }
+    }
+    return () => {
+      clearInterval(refreshHandler);
+    };
+  }, [refreshTokenFromAPI]);
 
   return {
     user,
