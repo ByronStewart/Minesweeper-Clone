@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 /**
  * Provides a way to hold boolean state and toggle that state
- * @param initialState
- * @returns state, toggle function, set false function, set true function
+ * @param initialState a boolean value which defaults to false
+ * @returns {Array} the state, a toggle function, a set false function, a set true function
  */
 export const useToggle = (
   initialState = false
