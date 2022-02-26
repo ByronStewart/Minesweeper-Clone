@@ -1,53 +1,72 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import React from "react"
+import { Link } from "react-router-dom"
+import { useAuth } from "../../hooks/useAuth"
+import { GoHome, GoThreeBars, GoTriangleDown } from "react-icons/go"
+import { useToggle } from "../../hooks/useToggle"
+import { IconContext } from "react-icons"
+import { MainMenuItem } from "../MainMenuItem"
 
 interface Props {}
 
 export const DefaultHeader: React.FC<Props> = () => {
-  const auth = useAuth();
+  const auth = useAuth()
+  const [isMenuOpen, toggleMenuOpen, setMenuClosed] = useToggle(false)
   return (
-    <div className="bg-slate-100">
-      {!auth.user && (
-        <>
-          <Link
-            className="px-4 py-2 inline-block border border-slate-500"
-            to="/login"
-          >
-            Login{" "}
+    <IconContext.Provider
+      value={{
+        size: "1.8em",
+      }}
+    >
+      <div>
+        <div className="flex justify-between">
+          <Link onClick={setMenuClosed} className="p-6" to="/">
+            <GoHome />
           </Link>
-          <Link
-            className="px-4 py-2 inline-block border border-slate-500"
-            to="/register"
-          >
-            Register{" "}
-          </Link>
-        </>
-      )}
-      <Link
-        className="px-4 py-2 inline-block border border-slate-500"
-        to="/about"
-      >
-        About{" "}
-      </Link>
-      <Link
-        className="px-4 py-2 inline-block border border-slate-500"
-        to="/game"
-      >
-        Game{" "}
-      </Link>
-
-      {auth.user && (
-        <>
-          <button
-            className="px-4 py-2 inline-block border border-slate-500"
-            onClick={() => auth.signOut()}
-          >
-            logout
+          {auth.user ? (
+            <Link
+              onClick={setMenuClosed}
+              className="p-6 font-bold text-xl overflow-hidden"
+              to="/profile"
+            >
+              {auth.user}
+            </Link>
+          ) : (
+            <Link
+              onClick={setMenuClosed}
+              className="p-6 font-bold text-xl overflow-hidden"
+              to="/login"
+            >
+              Login
+            </Link>
+          )}
+          <button className="p-6" onClick={toggleMenuOpen}>
+            {isMenuOpen ? <GoTriangleDown /> : <GoThreeBars />}
           </button>
-          <Link to="/protected">Protected</Link>
-        </>
-      )}
-    </div>
-  );
-};
+        </div>
+        {isMenuOpen && (
+          <div>
+            <MainMenuItem onClick={toggleMenuOpen} to="/instructions">
+              How to play
+            </MainMenuItem>
+            <MainMenuItem onClick={toggleMenuOpen} to="/halloffame">
+              Hall of fame
+            </MainMenuItem>
+            <MainMenuItem onClick={toggleMenuOpen} to="/login">
+              Login
+            </MainMenuItem>
+            <MainMenuItem onClick={toggleMenuOpen} to="/register">
+              Register
+            </MainMenuItem>
+            <MainMenuItem
+              onClick={toggleMenuOpen}
+              className="border-b"
+              to="/game"
+            >
+              New Game
+            </MainMenuItem>
+          </div>
+        )}
+      </div>
+    </IconContext.Provider>
+  )
+}
