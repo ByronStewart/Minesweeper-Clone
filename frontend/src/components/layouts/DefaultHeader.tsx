@@ -35,7 +35,7 @@ export const DefaultHeader: React.FC<Props> = () => {
         </button>
       </div>
       {isMenuOpen && (
-        <div className="relative">
+        <div className="relative z-10">
           <div className="absolute top-0 left-0 w-full bg-white">
             <MainMenuItem onClick={toggleMenuOpen} to="/instructions">
               How to play
