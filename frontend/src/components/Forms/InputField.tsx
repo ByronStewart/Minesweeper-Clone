@@ -22,7 +22,7 @@ export const InputField = ({
         <input
           className={`border focus:border-slate-600 rounded-sm ${
             icon ? "px-8" : "px-3"
-          } py-2 block w-full ${showError && "border-red-500"}`}
+          } py-2 block w-full ${showError ? "border-red-500" : ""}`}
           {...field}
           placeholder={placeholder}
         />

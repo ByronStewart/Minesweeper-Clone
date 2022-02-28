@@ -6,11 +6,13 @@ interface Props {}
 
 const BaseLayout: React.FC<Props> = () => {
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <div className="w-full">
         <DefaultHeader />
       </div>
-      <Outlet />
+      <div className="flex-grow relative">
+        <Outlet />
+      </div>
     </div>
   )
 }
