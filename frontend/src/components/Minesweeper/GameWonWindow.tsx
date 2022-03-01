@@ -2,20 +2,27 @@ import { useMinesweeper } from "../../hooks/useMinesweeper"
 import { BiTime } from "react-icons/bi"
 import { formatMinsAndSeconds, secondsToMinsAndSeconds } from "../../utils/lib"
 import { Link } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { RootState } from "../../store"
+import { resetGame } from "../../features/game/currentGameSlice"
 
-interface Props {
-  handleClose: VoidFunction
-}
+interface Props {}
 
-export const GameWonWindow: React.FC<Props> = ({ handleClose }) => {
-  const ms = useMinesweeper()
+export const GameWonWindow: React.FC<Props> = () => {
+  const dispatch = useDispatch()
+  const { time, bestTime } = useSelector((state: RootState) => {
+    const difficulty = state.currentGame.options.difficulty
+    return {
+      time: state.currentGame.gameProperties.time,
+      bestTime: Math.max(...state.gameHistory[difficulty]),
+    }
+  })
   const { mins: currentMins, seconds: currentSeconds } =
-    secondsToMinsAndSeconds(ms.currentGameState.time)
-  const bestTime = ms.getBestTime(ms.currentGameState.options.difficulty)
+    secondsToMinsAndSeconds(time)
   let bestMins = undefined
   let bestSeconds = undefined
   if (bestTime) {
-    const { mins, seconds } = secondsToMinsAndSeconds(ms.currentGameState.time)
+    const { mins, seconds } = secondsToMinsAndSeconds(bestTime)
     bestMins = mins
     bestSeconds = seconds
   }
@@ -38,8 +45,7 @@ export const GameWonWindow: React.FC<Props> = ({ handleClose }) => {
       )}
       <button
         onClick={() => {
-          ms.gameStateDispatch({ type: "resetGame" })
-          handleClose()
+          dispatch(resetGame())
         }}
       >
         Play again

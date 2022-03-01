@@ -1,6 +1,6 @@
 interface Props {
   onOpen: VoidFunction
-  onClose: VoidFunction
+  onClose?: VoidFunction
 }
 
 export const Modal: React.FC<Props> = ({ children, onOpen, onClose }) => {

@@ -1,21 +1,21 @@
 import { useMinesweeper } from "../../hooks/useMinesweeper"
+import { useDispatch } from "react-redux"
+import {
+  setDifficultyEasy,
+  setDifficultyHard,
+  setDifficultyMedium,
+} from "../../features/game/currentGameSlice"
 
-interface Props {
-  handleClose: VoidFunction
-}
+interface Props {}
 
-export const NewGameSelector: React.FC<Props> = ({ handleClose }) => {
-  const ms = useMinesweeper()
+export const NewGameSelector: React.FC<Props> = () => {
+  const dispatch = useDispatch()
   return (
     <div>
       <div>
         <button
           onClick={() => {
-            ms.gameStateDispatch({
-              type: "setDifficulty",
-              payload: "beginner",
-            })
-            handleClose()
+            dispatch(setDifficultyEasy())
           }}
           className="btn"
         >
@@ -26,11 +26,7 @@ export const NewGameSelector: React.FC<Props> = ({ handleClose }) => {
       <div>
         <button
           onClick={() => {
-            ms.gameStateDispatch({
-              type: "setDifficulty",
-              payload: "intermediate",
-            })
-            handleClose()
+            dispatch(setDifficultyMedium())
           }}
           className="btn"
         >
@@ -41,11 +37,7 @@ export const NewGameSelector: React.FC<Props> = ({ handleClose }) => {
       <div>
         <button
           onClick={() => {
-            ms.gameStateDispatch({
-              type: "setDifficulty",
-              payload: "advanced",
-            })
-            handleClose()
+            dispatch(setDifficultyHard())
           }}
           className="btn"
         >
