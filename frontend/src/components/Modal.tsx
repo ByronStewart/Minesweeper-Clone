@@ -7,7 +7,7 @@ export const Modal: React.FC<Props> = ({ children, onOpen, onClose }) => {
   return (
     <div
       onClick={onClose}
-      className="fixed left-0 top-0 flex justify-center items-center h-full w-full  bg-black/25"
+      className="z-10 fixed left-0 top-0 flex justify-center items-center h-full w-full  bg-black/25"
     >
       <div
         onClick={(e) => e.stopPropagation()}

@@ -5,6 +5,9 @@ import {
   useReducer,
   useState,
 } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { flagTile, startGame } from "../features/game/currentGameSlice"
+import { AppDispatch, RootState } from "../store"
 
 interface IMinesweeperOptions {
   numRows: number
@@ -116,54 +119,24 @@ const minesweeperContext = createContext<IMinesweeper>(undefined!)
 
 export const useMinesweeper = () => useContext(minesweeperContext)
 
-interface IMinesweeper {
-  handleGameEnd: (isWon: boolean) => void
-  currentGameState: IGameState
-  gameStateDispatch: React.Dispatch<GameStateActions>
-  getBestTime: (difficulty: Difficulty) => number | null
-}
+interface IMinesweeper {}
 
-const useProvideMinesweeper = (): IMinesweeper => {
-  const [history, setHistory] = useState<Record<Difficulty, Time[]>>({
-    advanced: [],
-    intermediate: [],
-    beginner: [],
-  })
-  const [currentGameState, gameStateDispatch] = useReducer(
-    currentGameStateReducer,
-    initialGameState
-  )
+export const useProvideMinesweeper = (): IMinesweeper => {
+  const dispatch = useDispatch<AppDispatch>()
+  const game = useSelector((state: RootState) => state.currentGame)
 
-  const handleGameEnd = (isWon: boolean) => {
-    const {
-      options: { difficulty },
-      time,
-    } = currentGameState
-    if (isWon) {
-      setHistory((history) => {
-        history[difficulty].push(time)
-        return history
-      })
-    }
-    gameStateDispatch({ type: "resetGame" })
-  }
-  const getBestTime = (difficulty: Difficulty) => {
-    if (history[difficulty].length === 0) {
-      return null
-    }
-    return Math.max(...history[difficulty])
-  }
-  // Reset game effect, fires on options change
+  //   const revealTile = (x: number, y: number) => {
+  //     // do nothing if the game is not setup correctly
+  //     if (game.gameState != "running" && game.gameState !== "pending") {
+  //       return
+  //     }
 
-  // TODO get the history from the api on load
-  useEffect(() => {}, [])
-
-  return {
-    handleGameEnd,
-    currentGameState,
-    gameStateDispatch,
-    getBestTime,
-  }
+  //     if (game.gameState == "pending") {
+  //       dispatch(startGame())
+  //     }
+  //     dispatch(flagTile({ x, y }))
+  //   }
+  return {}
 }
 
 export const ProvideMinesweeper: React.FC = ({ children }) => {

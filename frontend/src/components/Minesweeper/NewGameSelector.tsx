@@ -5,11 +5,12 @@ import {
   setDifficultyHard,
   setDifficultyMedium,
 } from "../../features/game/currentGameSlice"
+import { AppDispatch } from "../../store"
 
 interface Props {}
 
 export const NewGameSelector: React.FC<Props> = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   return (
     <div>
       <div>
