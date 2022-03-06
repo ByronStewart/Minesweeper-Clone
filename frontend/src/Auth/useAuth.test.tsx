@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks"
-import { ProvideAuth, useAuth } from "../useAuth"
+import { ProvideAuth, useAuth } from "./useAuth"
 
 describe.skip("useAuth tests", () => {
   let wrapper: React.FC

@@ -8,15 +8,15 @@ import {
   resetGame,
   startGame,
   winGame,
-} from "../../features/game/currentGameSlice"
-import { RevealStates } from "../../features/game/interfaces"
+} from "../../features/current-game/currentGameSlice"
+import { RevealStates } from "../../features/current-game/interfaces"
 import { TileComponent } from "./Tile/TileComponent"
 
 type Props = {
   flagOnTouch: boolean
 }
 
-const Minesweeper: React.FC<Props> = ({ flagOnTouch }) => {
+const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
   const gameState = useSelector((state: RootState) => state.currentGame)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -113,4 +113,4 @@ const Minesweeper: React.FC<Props> = ({ flagOnTouch }) => {
     </div>
   )
 }
-export default Minesweeper
+export default MinesweeperBoard

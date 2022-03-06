@@ -1,6 +1,5 @@
-import React from "react"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { ProvideAuth, RequireAuth } from "./hooks/useAuth"
+import { ProvideAuth } from "./Auth/useAuth"
 import BaseLayout from "./views/BaseLayout/BaseLayout"
 import MinesweeperPage from "./views/BaseLayout/MinesweeperPage"
 import { HallOfFamePage } from "./views/BaseLayout/HallOfFamePage/HallOfFamePage"
@@ -8,7 +7,6 @@ import IndexPage from "./views/BaseLayout/IndexPage/IndexPage"
 import { InstructionsPage } from "./views/BaseLayout/InstructionsPage/InstructionsPage"
 import LoginPage from "./views/BaseLayout/Login/LoginPage"
 import RegisterPage from "./views/BaseLayout/Register/RegisterPage"
-import { ProtectedPage } from "./views/ProtectedPage"
 import { MinesweeperLayout } from "./views/BaseLayout/GameLayout/GameLayout"
 
 function App() {

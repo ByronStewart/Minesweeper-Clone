@@ -1,9 +1,8 @@
 import { Field, Form, Formik } from "formik"
-import { FormEvent, useState } from "react"
 import { GoMail, GoPerson } from "react-icons/go"
 import { Link, useNavigate } from "react-router-dom"
 import { InputField } from "../../../components/Forms/InputField"
-import { useAuth } from "../../../hooks/useAuth"
+import { useAuth } from "../../../Auth/useAuth"
 import * as Yup from "yup"
 
 const RegisterPage: React.FC = () => {
@@ -29,7 +28,7 @@ const RegisterPage: React.FC = () => {
               if (err) {
                 const message = err.msg
                 const status = err.status
-                alert(message)
+                alert(`${message}, status: ${status}`)
                 return
               }
               navigate("/", {

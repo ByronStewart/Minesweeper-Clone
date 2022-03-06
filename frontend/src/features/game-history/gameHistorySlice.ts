@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { Difficulty } from "./interfaces"
+import { Difficulty } from "../current-game/interfaces"
 
 type IHistoryState = Record<Difficulty, number[]>
 

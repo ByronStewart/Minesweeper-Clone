@@ -1,13 +1,13 @@
-import { GameLostWindow } from "../../components/Minesweeper/GameLostWindow"
-import { GameWonWindow } from "../../components/Minesweeper/GameWonWindow"
+import { GameLostWindow } from "../../components/Minesweeper/StatusWindows/GameLostWindow"
+import { GameWonWindow } from "../../components/Minesweeper/StatusWindows/GameWonWindow"
 
-import { NewGameSelector } from "../../components/Minesweeper/NewGameSelector"
+import { DifficultySelectorWindow } from "../../components/Minesweeper/StatusWindows/DifficultySelectorWindow"
 import { Modal } from "../../components/Modal"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "../../store"
-import { getOptions, resetGame } from "../../features/game/currentGameSlice"
-import Minesweeper from "../../components/Minesweeper/Minesweeper"
-import { MinesweeperStatusBar } from "../../components/Minesweeper/MinesweeperStatusBar"
+import { resetGame } from "../../features/current-game/currentGameSlice"
+import MinesweeperBoard from "../../components/Minesweeper/MinesweeperBoard"
+import { MinesweeperStatusBar } from "../../components/Minesweeper/StatusWindows/MinesweeperStatusBar"
 import { FaFlag } from "react-icons/fa"
 import { FiEye } from "react-icons/fi"
 import { useToggle } from "../../hooks/useToggle"
@@ -15,7 +15,7 @@ import { useToggle } from "../../hooks/useToggle"
 type Props = {}
 
 const MinesweeperPage: React.FC<Props> = () => {
-  const { gameState: gameStatus, gameProperties } = useSelector(
+  const { gameState: gameStatus } = useSelector(
     (state: RootState) => state.currentGame
   )
   const dispatch = useDispatch()
@@ -23,12 +23,12 @@ const MinesweeperPage: React.FC<Props> = () => {
 
   return (
     <>
-      {gameStatus == "awaiting options" && (
+      {gameStatus === "awaiting options" && (
         <Modal onOpen={() => console.log("hi")}>
-          <NewGameSelector />
+          <DifficultySelectorWindow />
         </Modal>
       )}
-      {gameStatus == "finishedsuccess" && (
+      {gameStatus === "finishedsuccess" && (
         <Modal
           onOpen={() => console.log("hi")}
           onClose={() => dispatch(resetGame())}
@@ -36,7 +36,7 @@ const MinesweeperPage: React.FC<Props> = () => {
           <GameWonWindow />
         </Modal>
       )}
-      {gameStatus == "finishedfailure" && (
+      {gameStatus === "finishedfailure" && (
         <Modal
           onOpen={() => console.log("hi")}
           //onClose={}
@@ -48,7 +48,7 @@ const MinesweeperPage: React.FC<Props> = () => {
       <div className="h-full w-full flex flex-col">
         <MinesweeperStatusBar />
         <div className="flex-grow bg-blue-800 self-center w-full flex justify-center items-center">
-          <Minesweeper flagOnTouch={flagOnTouch} />
+          <MinesweeperBoard flagOnTouch={flagOnTouch} />
         </div>
         <button
           onClick={toggleFlagOnTouch}

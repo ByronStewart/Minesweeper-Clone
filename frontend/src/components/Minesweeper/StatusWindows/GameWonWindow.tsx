@@ -1,10 +1,12 @@
-import { useMinesweeper } from "../../hooks/useMinesweeper"
 import { BiTime } from "react-icons/bi"
-import { formatMinsAndSeconds, secondsToMinsAndSeconds } from "../../utils/lib"
+import {
+  formatMinsAndSeconds,
+  secondsToMinsAndSeconds,
+} from "../../../utils/lib"
 import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../../store"
-import { resetGame } from "../../features/game/currentGameSlice"
+import { RootState } from "../../../store"
+import { resetGame } from "../../../features/current-game/currentGameSlice"
 
 interface Props {}
 

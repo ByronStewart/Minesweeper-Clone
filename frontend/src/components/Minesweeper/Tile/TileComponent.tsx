@@ -1,96 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useSwipeable } from "react-swipeable"
 import {
   flagTile,
-  highlightTile,
-  incrementTime,
-  removeHighlightTile,
   revealTile,
-  startGame,
-} from "../../../features/game/currentGameSlice"
-import { RevealStates, Tile } from "../../../features/game/interfaces"
-import { getNeighbours } from "../../../features/game/utils"
-import { useToggle } from "../../../hooks/useToggle"
+} from "../../../features/current-game/currentGameSlice"
+import { RevealStates, Tile } from "../../../features/current-game/interfaces"
 import { AppDispatch, RootState } from "../../../store"
-import { SwipeOptionsModal } from "../SwipeOptionsModal"
 import { FaBomb, FaFlag } from "react-icons/fa"
 import { ImCross } from "react-icons/im"
 import { DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from "react"
-
-const findTilesToReveal = (cell: Tile, board: Tile[][]): Tile[] => {
-  if (cell.minesAdjacent !== 0) {
-    return [cell]
-  }
-  // dfs all available tiles to reveal
-  const queue: Tile[] = [cell]
-  const tilesFound: Tile[] = []
-  const seen = new Set<string>()
-  while (queue.length !== 0) {
-    const cell = queue.pop()!
-    const coord = `${cell.x},${cell.y}`
-    if (seen.has(coord)) {
-      continue
-    }
-    seen.add(coord)
-    tilesFound.push(cell)
-    if (cell.minesAdjacent === 0) {
-      const neighbors = getNeighbours(cell.x, cell.y, board)
-      for (const n of neighbors) {
-        if (n.revealState == RevealStates.HIDDEN) {
-          queue.push(n)
-        }
-      }
-    }
-  }
-  return tilesFound
-}
-
-function getTextColorAndSize(
-  minesAdjacent: number,
-  difficulty: "beginner" | "intermediate" | "advanced"
-) {
-  let ans = ""
-  switch (minesAdjacent) {
-    case 1:
-      ans += "text-blue-700"
-      break
-    case 2:
-      ans += "text-green-700"
-      break
-    case 3:
-      ans += "text-red-700"
-      break
-    case 4:
-      ans += "text-purple-700"
-      break
-    case 5:
-      ans += "text-pink-700"
-      break
-    case 6:
-      ans += "text-orange-700"
-      break
-    case 7:
-      ans += "text-slate-700"
-      break
-    case 8:
-      ans += "text-zinc-700"
-      break
-    default:
-      break
-  }
-  switch (difficulty) {
-    case "beginner":
-      ans += " text-2xl"
-      break
-    case "intermediate":
-      ans += " text-xl"
-      break
-    case "advanced":
-      ans += " text-xl"
-  }
-
-  return ans
-}
+import { findTilesToReveal, getTextColorAndSize } from "./utils"
 
 interface Props {
   cell: Tile
@@ -190,7 +108,7 @@ export const TileComponent: React.FC<Props> = ({
     (cell.x % 2 === 1 && cell.y % 2 === 1)
       ? "bg-gray-100"
       : "bg-gray-200"
-  //const revealedBgColor = "bg-blue-100"
+
   const commonClasses =
     "relative cursor-pointer text-center flex justify-center items-center font-semibold border-black text-center font-custom leading-10 select-none" +
     " " +

@@ -1,18 +1,14 @@
-import { useMinesweeper } from "../../hooks/useMinesweeper"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import {
   setDifficultyEasy,
   setDifficultyHard,
   setDifficultyMedium,
-} from "../../features/game/currentGameSlice"
-import { AppDispatch, RootState } from "../../store"
+} from "../../../features/current-game/currentGameSlice"
+import { AppDispatch } from "../../../store"
 
 interface Props {}
 
-export const NewGameSelector: React.FC<Props> = () => {
-  const gameState = useSelector(
-    (state: RootState) => state.currentGame.gameState
-  )
+export const DifficultySelectorWindow: React.FC<Props> = () => {
   const dispatch = useDispatch<AppDispatch>()
   return (
     <div className="text-sm text-center">

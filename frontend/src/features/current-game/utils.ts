@@ -1,4 +1,3 @@
-import { time } from "console"
 import { flatten, sampleSize } from "lodash"
 import { IMinesweeperOptions, Tile, RevealStates } from "./interfaces"
 

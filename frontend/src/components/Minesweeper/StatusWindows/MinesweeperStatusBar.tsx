@@ -1,9 +1,9 @@
 import { FaBomb } from "react-icons/fa"
 import { MdTimer } from "react-icons/md"
 import { useDispatch, useSelector } from "react-redux"
-import { getOptions } from "../../features/game/currentGameSlice"
-import { AppDispatch, RootState } from "../../store"
-import { secondsToMinsAndSeconds } from "../../utils/lib"
+import { getOptions } from "../../../features/current-game/currentGameSlice"
+import { AppDispatch, RootState } from "../../../store"
+import { secondsToMinsAndSeconds } from "../../../utils/lib"
 
 export const MinesweeperStatusBar: React.FC = () => {
   const gameProperties = useSelector(

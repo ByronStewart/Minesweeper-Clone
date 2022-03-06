@@ -1,14 +1,7 @@
-import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { number } from "yup/lib/locale"
-import { gameStates, revealTypes } from "../../services/Minesweeper/game"
-import { AppDispatch, RootState } from "../../store"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+
 import { ADVANCED, BEGINNER, INTERMEDIATE } from "./constants"
-import {
-  Difficulty,
-  IGameState,
-  IMinesweeperOptions,
-  RevealStates,
-} from "./interfaces"
+import { IGameState, RevealStates } from "./interfaces"
 import {
   generateInitialBoard,
   getInitialMinesRemainingFromOptions,
@@ -27,23 +20,6 @@ export const initialState: IGameState = {
     BEGINNER.numMines
   ),
 }
-
-// const doRevealTile = createAction()
-
-// export const doRevealTile =
-//   (x: number, y: number) =>
-//   (dispatch: AppDispatch, getState: () => RootState) => {
-//     const game = getState().currentGame
-//     // do nothing if the game is not setup correctly
-//     if (game.gameState != "running" && game.gameState !== "pending") {
-//       return
-//     }
-
-//     if (game.gameState == "pending") {
-//       dispatch(startGame())
-//     }
-//     dispatch(flagTile({ x, y }))
-//   }
 
 export const currentGameSlice = createSlice({
   name: "currentGame",
@@ -83,7 +59,7 @@ export const currentGameSlice = createSlice({
       )
     },
     updateTime: (state, action: PayloadAction<number>) => {
-      if (state.gameState == "running") {
+      if (state.gameState === "running") {
         state.gameProperties.time = action.payload
       }
     },
@@ -123,7 +99,7 @@ export const currentGameSlice = createSlice({
       state.gameProperties.time += 1
     },
     updateMinesRemaining: (state, action: PayloadAction<number>) => {
-      if (state.gameState == "running") {
+      if (state.gameState === "running") {
         state.gameProperties.numMinesRemaining = action.payload
       }
     },
