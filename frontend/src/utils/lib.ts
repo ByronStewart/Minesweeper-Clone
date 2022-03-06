@@ -1,8 +1,8 @@
-export function secondsToMinsAndSeconds (seconds: number) {
+export function secondsToMinsAndSeconds(seconds: number) {
   let mins = 0
   while (true) {
     let tempSeconds = Math.floor(seconds / 60)
-    if (tempSeconds == 0) {
+    if (tempSeconds <= 0) {
       break
     }
     seconds = tempSeconds
@@ -10,10 +10,10 @@ export function secondsToMinsAndSeconds (seconds: number) {
   }
   return {
     mins,
-    seconds
+    seconds,
   }
 }
 
-export function formatMinsAndSeconds (mins: number, seconds: number) {
+export function formatMinsAndSeconds(mins: number, seconds: number) {
   return `${mins}:${seconds >= 10 ? seconds : `0${seconds}`}`
 }

@@ -11,7 +11,7 @@ export const Modal: React.FC<Props> = ({ children, onOpen, onClose }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="p-10 bg-white font-normal"
+        className="p-5 bg-white font-normal bg-white/90"
       >
         {children}
       </div>

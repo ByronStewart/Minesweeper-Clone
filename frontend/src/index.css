@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,5 +18,9 @@
   body,
   #root {
     @apply h-full;
+  }
+
+  .btn-modal {
+    @apply bg-blue-500 p-2 text-sm block;
   }
 }

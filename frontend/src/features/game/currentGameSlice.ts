@@ -50,15 +50,19 @@ export const currentGameSlice = createSlice({
   initialState,
   reducers: {
     setDifficultyEasy: (state) => {
+      state.gameProperties.time = 0
+      state.gameProperties.numMinesRemaining = BEGINNER.numMines
       state.options = BEGINNER
       state.gameState = "pending"
       state.board = generateInitialBoard(
-        INTERMEDIATE.numRows,
-        INTERMEDIATE.numCols,
-        INTERMEDIATE.numMines
+        BEGINNER.numRows,
+        BEGINNER.numCols,
+        BEGINNER.numMines
       )
     },
     setDifficultyMedium: (state) => {
+      state.gameProperties.time = 0
+      state.gameProperties.numMinesRemaining = INTERMEDIATE.numMines
       state.options = INTERMEDIATE
       state.gameState = "pending"
       state.board = generateInitialBoard(
@@ -68,6 +72,8 @@ export const currentGameSlice = createSlice({
       )
     },
     setDifficultyHard: (state) => {
+      state.gameProperties.time = 0
+      state.gameProperties.numMinesRemaining = ADVANCED.numMines
       state.options = ADVANCED
       state.gameState = "pending"
       state.board = generateInitialBoard(
@@ -80,6 +86,9 @@ export const currentGameSlice = createSlice({
       if (state.gameState == "running") {
         state.gameProperties.time = action.payload
       }
+    },
+    getOptions: (state) => {
+      state.gameState = "awaiting options"
     },
     removeHighlightTile: (
       state,
@@ -104,8 +113,10 @@ export const currentGameSlice = createSlice({
       const { x, y, toFlag } = action.payload
       if (toFlag) {
         state.board[y][x].revealState = RevealStates.FLAGGED
+        state.gameProperties.numMinesRemaining--
       } else {
         state.board[y][x].revealState = RevealStates.HIDDEN
+        state.gameProperties.numMinesRemaining++
       }
     },
     incrementTime: (state) => {
@@ -154,5 +165,6 @@ export const {
   highlightTile,
   incrementTime,
   removeHighlightTile,
+  getOptions,
 } = currentGameSlice.actions
 export default currentGameSlice.reducer

@@ -18,14 +18,13 @@ export const GameLostWindow: React.FC<Props> = () => {
   const dispatch = useDispatch()
   return (
     <div>
-      <p>Time</p>
-      <div>
-        <div>
-          <BiTime />
-        </div>
-        <div>{formatMinsAndSeconds(currentMins, currentSeconds)}</div>
+      <p className="text-xl">Time</p>
+      <div className="text-lg">
+        <BiTime className="mr-2 inline-block" />
+        <span>{formatMinsAndSeconds(currentMins, currentSeconds)}</span>
       </div>
       <button
+        className="btn-modal mt-2"
         onClick={() => {
           dispatch(resetGame())
         }}

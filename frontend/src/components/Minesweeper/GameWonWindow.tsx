@@ -27,30 +27,33 @@ export const GameWonWindow: React.FC<Props> = () => {
     bestSeconds = seconds
   }
   return (
-    <div>
-      <p>Time</p>
-      <div>
-        <div>
-          <BiTime />
-        </div>
-        <div>{formatMinsAndSeconds(currentMins, currentSeconds)}</div>
+    <div className="text-center">
+      <p className="text-xl">Time</p>
+      <div className="text-lg">
+        <BiTime className="inline-block mr-2" />
+        <span className="inline-block">
+          {formatMinsAndSeconds(currentMins, currentSeconds)}
+        </span>
       </div>
-      {bestMins && bestSeconds && (
+      {bestMins && bestSeconds ? (
         <div>
-          <div>
-            <BiTime />
-          </div>
-          <div>{formatMinsAndSeconds(bestMins, bestSeconds)}</div>
+          <BiTime className="inline-block mr-2" />
+          <span>{formatMinsAndSeconds(bestMins, bestSeconds)}</span>
         </div>
+      ) : (
+        ""
       )}
       <button
+        className="btn-modal mt-2 mx-auto"
         onClick={() => {
           dispatch(resetGame())
         }}
       >
         Play again
       </button>
-      <Link to="/login">Login to save scores</Link>
+      <Link className="btn-modal bg-red-400 mt-1 mx-auto" to="/login">
+        Login to save scores
+      </Link>
     </div>
   )
 }

@@ -10,11 +10,13 @@ import {
   winGame,
 } from "../../features/game/currentGameSlice"
 import { RevealStates } from "../../features/game/interfaces"
-import { TileComponent } from "./TileComponent"
+import { TileComponent } from "./Tile/TileComponent"
 
-type Props = {}
+type Props = {
+  flagOnTouch: boolean
+}
 
-const Minesweeper: React.FC<Props> = ({}) => {
+const Minesweeper: React.FC<Props> = ({ flagOnTouch }) => {
   const gameState = useSelector((state: RootState) => state.currentGame)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -29,7 +31,6 @@ const Minesweeper: React.FC<Props> = ({}) => {
           if (tile.minesAdjacent === -1) {
             // game is over
             // clear the game timer
-            cleanupGameEnd()
             dispatch(loseGame())
             return
           }
@@ -44,7 +45,7 @@ const Minesweeper: React.FC<Props> = ({}) => {
       gameState.options.numMines
     if (numRevealedTiles == numTilesNeededToReveal) {
       // successfully cleared all the mines
-      cleanupGameEnd()
+
       dispatch(winGame())
     }
   }
@@ -73,22 +74,38 @@ const Minesweeper: React.FC<Props> = ({}) => {
   useEffect(() => {
     if (gameState.gameState === "running") {
       checkAndHandleGameOver()
+    } else {
+      cleanupGameEnd()
     }
   }, [gameState])
 
+  let gridsize: string
+  switch (gameState.options.difficulty) {
+    case "beginner":
+      gridsize = "40px"
+      break
+    case "intermediate":
+      gridsize = "30px"
+      break
+    case "advanced":
+      gridsize = "30px"
+      break
+  }
+
   return (
     <div
-      className="grid m-6"
+      className="grid"
       style={{
-        gridTemplateColumns: `repeat(${gameState.options.numCols}, 40px)`,
-        gridTemplateRows: `repeat(${gameState.options.numRows}, 40px)`,
+        gridTemplateColumns: `repeat(${gameState.options.numCols}, ${gridsize})`,
+        gridTemplateRows: `repeat(${gameState.options.numRows}, ${gridsize})`,
       }}
     >
-      {gameState.board.map((row, y) =>
-        row.map((cell, x) => (
+      {gameState.board.map((row) =>
+        row.map((cell) => (
           <TileComponent
+            flagOnTouch={flagOnTouch}
+            key={`${cell.x},${cell.y}`}
             handleGameStart={handleGameStart}
-            handleGameOver={checkAndHandleGameOver}
             cell={cell}
           />
         ))
