@@ -22,33 +22,6 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
 
   const timer = useRef<NodeJS.Timer | undefined>(undefined)
 
-  const checkAndHandleGameOver = () => {
-    let numRevealedTiles = 0
-    for (const row of gameState.board) {
-      for (const tile of row) {
-        if (tile.revealState == RevealStates.REVEALED) {
-          // check for revealed mine
-          if (tile.minesAdjacent === -1) {
-            // game is over
-            // clear the game timer
-            dispatch(loseGame())
-            return
-          }
-          // add to the revealed count if is revealed
-          numRevealedTiles++
-        }
-      }
-    }
-    // check if all the tiles that need to be revealed are revealed
-    const numTilesNeededToReveal =
-      gameState.options.numCols * gameState.options.numRows -
-      gameState.options.numMines
-    if (numRevealedTiles == numTilesNeededToReveal) {
-      // successfully cleared all the mines
-
-      dispatch(winGame())
-    }
-  }
   const cleanupGameEnd = () => {
     if (timer.current) {
       clearInterval(timer.current)
@@ -68,10 +41,38 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
       cleanupGameEnd()
       dispatch(resetGame())
     }
-  }, [])
+  }, [dispatch])
 
   // check for game over on state change
   useEffect(() => {
+    const checkAndHandleGameOver = () => {
+      let numRevealedTiles = 0
+      for (const row of gameState.board) {
+        for (const tile of row) {
+          if (tile.revealState === RevealStates.REVEALED) {
+            // check for revealed mine
+            if (tile.minesAdjacent === -1) {
+              // game is over
+              // clear the game timer
+              dispatch(loseGame())
+              return
+            }
+            // add to the revealed count if is revealed
+            numRevealedTiles++
+          }
+        }
+      }
+      // check if all the tiles that need to be revealed are revealed
+      const numTilesNeededToReveal =
+        gameState.options.numCols * gameState.options.numRows -
+        gameState.options.numMines
+      if (numRevealedTiles === numTilesNeededToReveal) {
+        // successfully cleared all the mines
+
+        dispatch(winGame())
+      }
+    }
+
     if (gameState.gameState === "running") {
       checkAndHandleGameOver()
     } else {

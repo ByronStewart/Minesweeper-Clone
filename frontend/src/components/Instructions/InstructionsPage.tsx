@@ -3,7 +3,7 @@ import { IconContext } from "react-icons"
 import { GoChevronLeft, GoChevronRight } from "react-icons/go"
 import { useSwipeable } from "react-swipeable"
 import { debounce } from "lodash"
-import { Pagination } from "./Components/Pagination"
+import { Pagination } from "./Pagination"
 
 type OnboardingState = {
   page: number

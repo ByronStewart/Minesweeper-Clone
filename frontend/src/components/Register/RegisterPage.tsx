@@ -1,41 +1,53 @@
 import { Field, Form, Formik } from "formik"
-import { Link, Location, useLocation, useNavigate } from "react-router-dom"
-import { useAuth } from "../../../Auth/useAuth"
+import { GoMail, GoPerson } from "react-icons/go"
+import { Link, useNavigate } from "react-router-dom"
+import { InputField } from "../Forms/InputField"
+import { useAuth } from "../../Auth/useAuth"
 import * as Yup from "yup"
-import { InputField } from "../../../components/Forms/InputField"
-import { GoMail } from "react-icons/go"
 
-const LoginPage: React.FC = () => {
-  const location = useLocation()
+const RegisterPage: React.FC = () => {
   const navigate = useNavigate()
-  const auth = useAuth()
-  const from = (location.state as { from?: Location })?.from?.pathname || "/"
+  const { register } = useAuth()
   return (
     <div className="mt-20 mx-8">
-      <h2 className="text-3xl font-semibold">Sign In</h2>
+      <h2 className="text-3xl font-semibold">Register</h2>
       <div className="mt-8">
         <Formik
           initialValues={{
+            username: "",
             email: "",
             password: "",
           }}
           validationSchema={Yup.object({
+            username: Yup.string().required(),
             email: Yup.string().email().required(),
             password: Yup.string().required(),
           })}
-          onSubmit={(values) => {
-            auth.signIn(values.email, values.password, (err) => {
+          onSubmit={({ email, password, username }) => {
+            register(username, email, password, (err) => {
               if (err) {
-                alert(err.msg)
+                const message = err.msg
+                const status = err.status
+                alert(`${message}, status: ${status}`)
                 return
               }
-              navigate(from, { replace: true })
+              navigate("/", {
+                replace: true,
+              })
             })
           }}
         >
           <Form>
             <Field
+              name="username"
+              as={InputField}
+              placeholder="username"
+              label="Username"
+              icon={<GoPerson color="#555" />}
+            />
+            <Field
               name="email"
+              type="email"
               as={InputField}
               placeholder="email"
               label="Email"
@@ -43,17 +55,17 @@ const LoginPage: React.FC = () => {
             />
             <Field
               name="password"
+              type="password"
               as={InputField}
               placeholder="password"
               label="Password"
             />
             <div className="flex justify-between mt-8">
               <button className="btn btn-outline-blue" type="submit">
-                Sign in
-              </button>
-              <button></button>
-              <Link to="/register" className="btn btn-outline-red">
                 Register
+              </button>
+              <Link className="btn btn-outline-red" to="/login">
+                Login
               </Link>
             </div>
           </Form>
@@ -62,4 +74,5 @@ const LoginPage: React.FC = () => {
     </div>
   )
 }
-export default LoginPage
+
+export default RegisterPage

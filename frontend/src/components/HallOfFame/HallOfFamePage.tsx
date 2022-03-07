@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { HighScore } from "../../../components/Tabs/HighScore"
-import { Tab } from "../../../components/Tabs/Tab"
+import { ScoreListItem } from "./ScoreListItem"
+import { Tab } from "./Tab"
 
 type Difficulty = "advanced" | "intermediate" | "beginner"
 
@@ -180,20 +180,21 @@ export const HallOfFamePage: React.FC = () => {
   }, [])
   return (
     <div>
-      <h3 className="text-xl mt-6 text-center mx-auto mb-4">
+      <h3 className="font-custom underline text-3xl mt-6 text-center mx-auto mb-4">
         The hall of fame
       </h3>
-      <div>
+      <div className="mb-16">
         {highScores &&
-          highScores[tabIndex].map((score) => (
-            <HighScore
+          highScores[tabIndex].map((score, i) => (
+            <ScoreListItem
+              idx={i}
               time={score.time}
               username={score.username}
               key={score.id}
-            ></HighScore>
+            ></ScoreListItem>
           ))}
       </div>
-      <div className="fixed bottom-0 w-full z-10 bg-gray-300">
+      <div className="fixed bottom-0 w-full z-10 bg-blue-300">
         <ul className="flex justify-evenly">
           <Tab
             active={tabIndex === "beginner"}

@@ -1,6 +1,6 @@
 import React from "react"
 import { Outlet } from "react-router-dom"
-import { DefaultHeader } from "../../components/layouts/DefaultHeader"
+import { DefaultHeader } from "./DefaultHeader"
 
 interface Props {}
 
