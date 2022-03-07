@@ -2,10 +2,7 @@ interface Props extends React.LiHTMLAttributes<HTMLLIElement> {
   active: boolean
 }
 
-export const Tab: React.FC<Props> = (
-  { children, active, onClick },
-  ...props
-) => {
+export const Tab: React.FC<Props> = ({ children, active, onClick }) => {
   return (
     <li
       className={`font-custom font-semibold text-xl cursor-pointer block py-4 px-2 ${
@@ -14,7 +11,6 @@ export const Tab: React.FC<Props> = (
           : ""
       }`}
       onClick={onClick}
-      {...props}
     >
       {children}
     </li>

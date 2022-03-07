@@ -39,11 +39,13 @@ const LoginPage: React.FC = () => {
               as={InputField}
               placeholder="email"
               label="Email"
+              type="email"
               icon={<GoMail color="#555" />}
             />
             <Field
               name="password"
               as={InputField}
+              type="password"
               placeholder="password"
               label="Password"
             />

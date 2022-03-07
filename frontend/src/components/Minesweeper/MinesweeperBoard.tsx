@@ -68,7 +68,6 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
         gameState.options.numMines
       if (numRevealedTiles === numTilesNeededToReveal) {
         // successfully cleared all the mines
-
         dispatch(winGame())
       }
     }
