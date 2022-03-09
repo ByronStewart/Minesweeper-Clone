@@ -23,12 +23,18 @@ const RegisterPage: React.FC = () => {
             email: Yup.string().email().required(),
             password: Yup.string().required(),
           })}
-          onSubmit={({ email, password, username }) => {
+          onSubmit={({ email, password, username }, helpers) => {
             register(username, email, password, (err) => {
               if (err) {
-                const message = err.msg
-                const status = err.status
-                alert(`${message}, status: ${status}`)
+                console.log(err)
+                if (err.username) {
+                  helpers.setErrors({
+                    username: err.username,
+                    email: err.email,
+                    password: err.password,
+                  })
+                  const status = err.status
+                }
                 return
               }
               navigate("/", {

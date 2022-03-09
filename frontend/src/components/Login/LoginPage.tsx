@@ -23,10 +23,13 @@ const LoginPage: React.FC = () => {
             email: Yup.string().email().required(),
             password: Yup.string().required(),
           })}
-          onSubmit={(values) => {
+          onSubmit={(values, helpers) => {
             auth.signIn(values.email, values.password, (err) => {
               if (err) {
-                alert(err.msg)
+                console.log(err)
+                helpers.setErrors({
+                  email: err.detail,
+                })
                 return
               }
               navigate(from, { replace: true })

@@ -4,14 +4,14 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import jwt_decode from "jwt-decode";
+} from "react"
+import jwt_decode from "jwt-decode"
 import {
   LOGIN_ROUTE,
   REFRESH_INTERVAL,
   REFRESH_ROUTE,
   REGISTER_ROUTE,
-} from "../utils/constants";
+} from "../utils/constants"
 import {
   IAuth,
   ILoginFailDTO,
@@ -19,10 +19,10 @@ import {
   IRegisterFailDTO,
   IToken,
   IUser,
-} from "../interfaces/IAuth";
+} from "../interfaces/IAuth"
 
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { IErrorMessage } from "../interfaces/IMessage";
+import { Navigate, Outlet, useLocation } from "react-router-dom"
+import { IErrorMessage } from "../interfaces/IMessage"
 
 const authContext = createContext<IAuth>({
   user: false,
@@ -30,74 +30,60 @@ const authContext = createContext<IAuth>({
   register: async () => {},
   signOut: () => {},
   signIn: async () => {},
-});
+})
 
 export const RequireAuth = () => {
-  const auth = useAuth();
-  let location = useLocation();
+  const auth = useAuth()
+  let location = useLocation()
 
   if (!auth.user) {
     // redirect to the login page but save the current location from which they were redirected
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />
   }
-  return <Outlet />;
-};
+  return <Outlet />
+}
 
 export const ProvideAuth: React.FC = ({ children }) => {
-  const auth = useProvideAuth();
-  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
-};
+  const auth = useProvideAuth()
+  return <authContext.Provider value={auth}>{children}</authContext.Provider>
+}
 
 export const useAuth = () => {
-  return useContext(authContext);
-};
+  return useContext(authContext)
+}
 
 const useProvideAuth = (): IAuth => {
-  const [user, setUser] = useState<IUser | false>(false);
-  const [access, setAccess] = useState<string | null>(null);
-  const [refresh, setRefresh] = useState<string | null>(null);
+  const [user, setUser] = useState<IUser | false>(false)
+  const [access, setAccess] = useState<string | null>(null)
+  const [refresh, setRefresh] = useState<string | null>(null)
 
   const handleLoginUser = (data: ILoginSuccessDTO) => {
-    setAccess(data.access);
-    setRefresh(data.refresh);
-    localStorage.setItem("access", data.access);
-    localStorage.setItem("refresh", data.refresh);
-    const tokenDetails: IToken = jwt_decode(data.access);
+    setAccess(data.access)
+    setRefresh(data.refresh)
+    localStorage.setItem("access", data.access)
+    localStorage.setItem("refresh", data.refresh)
+    const tokenDetails: IToken = jwt_decode(data.access)
     setUser({
       username: tokenDetails.username,
       id: tokenDetails.user_id,
-    });
-  };
+    })
+  }
 
   const handleLoginError = (
     data: ILoginFailDTO,
     response: Response
   ): IErrorMessage => {
-    setUser(false);
+    setUser(false)
     return {
       msg: data.detail,
       status: response.status,
-    };
-  };
-
-  const handleRegisterError = (
-    error: IRegisterFailDTO,
-    response: Response
-  ): IErrorMessage => {
-    let msgList = "";
-    for (const err in error) {
-      msgList += err + ", ";
     }
-    return {
-      msg: `The following details were not provided: ${msgList}`,
-      status: response.status,
-    };
-  };
+  }
 
   const signIn = async (
     email: string,
     password: string,
-    callback: (err?: IErrorMessage) => void
+    callback: (err?: ILoginFailDTO & { status: number }) => void
   ) => {
     try {
       const response = await fetch(LOGIN_ROUTE, {
@@ -109,37 +95,37 @@ const useProvideAuth = (): IAuth => {
           email,
           password,
         }),
-      });
+      })
       if (response.ok) {
-        const data: ILoginSuccessDTO = await response.json();
-        handleLoginUser(data);
-        callback();
+        const data: ILoginSuccessDTO = await response.json()
+        handleLoginUser(data)
+        callback()
       } else {
-        const error: ILoginFailDTO = await response.json();
-        const errorMessage: IErrorMessage = handleLoginError(error, response);
-        callback(errorMessage);
+        const error: ILoginFailDTO = await response.json()
+        setUser(false)
+        callback({ ...error, status: response.status })
       }
     } catch (error) {
-      console.error(error);
-      signOut();
-      callback({ msg: "something went wrong", status: -1 });
+      console.error(error)
+      signOut()
+      callback({ detail: "something went wrong", status: -1 })
     }
-  };
+  }
   const signOut = (callback?: (err?: IErrorMessage) => {}) => {
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
-    setUser(false);
-    setAccess(null);
-    setRefresh(null);
+    localStorage.removeItem("access")
+    localStorage.removeItem("refresh")
+    setUser(false)
+    setAccess(null)
+    setRefresh(null)
     if (callback) {
-      callback();
+      callback()
     }
-  };
+  }
   const register = async (
     username: string,
     email: string,
     password: string,
-    callback: (err?: IErrorMessage) => void
+    callback: (err?: IRegisterFailDTO & { status: number }) => void
   ) => {
     try {
       const response = await fetch(REGISTER_ROUTE, {
@@ -152,21 +138,21 @@ const useProvideAuth = (): IAuth => {
           email,
           password,
         }),
-      });
+      })
       if (response.ok) {
-        const data: ILoginSuccessDTO = await response.json();
-        handleLoginUser(data);
-        callback();
+        const data: ILoginSuccessDTO = await response.json()
+        handleLoginUser(data)
+        callback()
       } else {
-        const error: IRegisterFailDTO = await response.json();
-        const errorMessage = handleRegisterError(error, response);
-        callback(errorMessage);
+        const error: IRegisterFailDTO = await response.json()
+        //const errorMessage = handleRegisterError(error, response);
+        callback({ ...error, status: response.status })
       }
     } catch (error) {
-      signOut();
-      callback({ msg: "something went wrong", status: -1 });
+      signOut()
+      callback({ status: 500 })
     }
-  };
+  }
 
   const refreshTokenFromAPI = useCallback(async (refreshToken: string) => {
     const response = await fetch(REFRESH_ROUTE, {
@@ -177,40 +163,40 @@ const useProvideAuth = (): IAuth => {
       body: JSON.stringify({
         refresh: refreshToken,
       }),
-    });
+    })
     if (response.ok) {
-      const data = await response.json();
+      const data = await response.json()
       return {
         access: data.access,
         refresh: refreshToken,
-      };
+      }
     }
-    return Promise.reject({ error: "unauthorized" });
-  }, []);
+    return Promise.reject({ error: "unauthorized" })
+  }, [])
 
   // runs on page load, get the refresh token from local storage and obtain a new access token if exists
   useEffect(() => {
-    const refreshToken = localStorage.getItem("refresh");
-    let refreshHandler: NodeJS.Timer;
+    const refreshToken = localStorage.getItem("refresh")
+    let refreshHandler: NodeJS.Timer
     if (refreshToken) {
-      const decodedToken: IToken = jwt_decode(refreshToken);
+      const decodedToken: IToken = jwt_decode(refreshToken)
       // if it has not expired we will obtain a new access token and log the user in
       if (decodedToken.exp * 1000 > Date.now()) {
         refreshTokenFromAPI(refreshToken).then((tokens) => {
-          handleLoginUser(tokens);
+          handleLoginUser(tokens)
           // set a interval to refresh the access token periodically
           refreshHandler = setInterval(() => {
             refreshTokenFromAPI(refreshToken).then((tokens) =>
               handleLoginUser(tokens)
-            );
-          }, REFRESH_INTERVAL);
-        });
+            )
+          }, REFRESH_INTERVAL)
+        })
       }
     }
     return () => {
-      clearInterval(refreshHandler);
-    };
-  }, [refreshTokenFromAPI]);
+      clearInterval(refreshHandler)
+    }
+  }, [refreshTokenFromAPI])
 
   return {
     user,
@@ -218,5 +204,5 @@ const useProvideAuth = (): IAuth => {
     signIn,
     signOut,
     register,
-  };
-};
+  }
+}
