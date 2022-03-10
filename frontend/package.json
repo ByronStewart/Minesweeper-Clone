@@ -11,6 +11,7 @@
     "@types/node": "^16.11.21",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "axios": "^0.26.1",
     "formik": "^2.2.9",
     "framer-motion": "^6.2.8",
     "jwt-decode": "^3.1.2",

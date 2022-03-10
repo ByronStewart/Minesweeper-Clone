@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchGameHistory } from "../../features/game-history/gameHistorySlice"
+import { AppDispatch, RootState } from "../../store"
 import { ScoreListItem } from "./ScoreListItem"
 import { Tab } from "./Tab"
 
@@ -170,13 +173,12 @@ const mockhighscores: Record<Difficulty, Array<HighScore>> = {
 }
 
 export const HallOfFamePage: React.FC = () => {
-  const [highScores, setHighScores] =
-    useState<Record<Difficulty, Array<HighScore>>>()
-
+  const history = useSelector((state: RootState) => state.gameHistory)
+  const dispatch = useDispatch<AppDispatch>()
   const [tabIndex, setTabIndex] = useState<Difficulty>("beginner")
 
   useEffect(() => {
-    setHighScores(() => mockhighscores)
+    dispatch(fetchGameHistory())
   }, [])
   return (
     <div>
@@ -184,15 +186,14 @@ export const HallOfFamePage: React.FC = () => {
         The hall of fame
       </h3>
       <div className="mb-16">
-        {highScores &&
-          highScores[tabIndex].map((score, i) => (
-            <ScoreListItem
-              idx={i}
-              time={score.time}
-              username={score.username}
-              key={score.id}
-            ></ScoreListItem>
-          ))}
+        {history[tabIndex].map((score, i) => (
+          <ScoreListItem
+            idx={i}
+            time={score.time}
+            username={score.owner}
+            key={score.id}
+          />
+        ))}
       </div>
       <div className="fixed bottom-0 w-full z-10 bg-blue-300">
         <ul className="flex justify-evenly">

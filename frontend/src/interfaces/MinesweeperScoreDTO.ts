@@ -6,15 +6,15 @@ export enum minesweeperAPIDifficultyTypes {
 
 export interface POSTMinesweeperScoreDTO {
   score: {
-    time: number;
-    difficulty: minesweeperAPIDifficultyTypes;
-  };
+    time: number
+    difficulty: minesweeperAPIDifficultyTypes
+  }
 }
 
 export interface GETMinesweeperScoreDTO {
-  time: number;
-  difficulty: minesweeperAPIDifficultyTypes;
-  owner: string;
-  id: number;
-  created_at: Date;
+  time: number
+  difficulty: minesweeperAPIDifficultyTypes
+  owner: string
+  id: number
+  created_at: number
 }

@@ -11,12 +11,15 @@ import {
 } from "../../features/current-game/currentGameSlice"
 import { RevealStates } from "../../features/current-game/interfaces"
 import { TileComponent } from "./Tile/TileComponent"
+import { useAuth } from "../../Auth/useAuth"
+import { postGameScore } from "../../features/game-history/gameHistorySlice"
 
 type Props = {
   flagOnTouch: boolean
 }
 
 const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
+  const auth = useAuth()
   const gameState = useSelector((state: RootState) => state.currentGame)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -69,6 +72,16 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
       if (numRevealedTiles === numTilesNeededToReveal) {
         // successfully cleared all the mines
         dispatch(winGame())
+        if (auth.user) {
+          dispatch(
+            postGameScore({
+              created_at: Date.now(),
+              difficulty: gameState.options.difficulty,
+              owner: auth.user.username,
+              time: gameState.gameProperties.time,
+            })
+          )
+        }
       }
     }
 

@@ -12,22 +12,15 @@ interface Props {}
 
 export const GameWonWindow: React.FC<Props> = () => {
   const dispatch = useDispatch()
-  const { time, bestTime } = useSelector((state: RootState) => {
+  const { time } = useSelector((state: RootState) => {
     const difficulty = state.currentGame.options.difficulty
     return {
       time: state.currentGame.gameProperties.time,
-      bestTime: Math.max(...state.gameHistory[difficulty]),
     }
   })
   const { mins: currentMins, seconds: currentSeconds } =
     secondsToMinsAndSeconds(time)
-  let bestMins = undefined
-  let bestSeconds = undefined
-  if (bestTime) {
-    const { mins, seconds } = secondsToMinsAndSeconds(bestTime)
-    bestMins = mins
-    bestSeconds = seconds
-  }
+
   return (
     <div className="text-center">
       <p className="text-xl">Time</p>
@@ -37,14 +30,7 @@ export const GameWonWindow: React.FC<Props> = () => {
           {formatMinsAndSeconds(currentMins, currentSeconds)}
         </span>
       </div>
-      {bestMins && bestSeconds ? (
-        <div>
-          <BiTime className="inline-block mr-2" />
-          <span>{formatMinsAndSeconds(bestMins, bestSeconds)}</span>
-        </div>
-      ) : (
-        ""
-      )}
+
       <button
         className="btn-modal mt-2 mx-auto"
         onClick={() => {
