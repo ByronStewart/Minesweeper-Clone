@@ -1,4 +1,8 @@
-import { RevealStates, Tile } from "../../../features/current-game/interfaces"
+import {
+  Difficulty,
+  RevealStates,
+  Tile,
+} from "../../../features/current-game/interfaces"
 import { getNeighbours } from "../../../features/current-game/utils"
 
 export const findTilesToReveal = (cell: Tile, board: Tile[][]): Tile[] => {
@@ -29,10 +33,7 @@ export const findTilesToReveal = (cell: Tile, board: Tile[][]): Tile[] => {
   return tilesFound
 }
 
-export function getTextColorAndSize(
-  minesAdjacent: number,
-  difficulty: "beginner" | "intermediate" | "advanced"
-) {
+export function getTextColor(minesAdjacent: number) {
   let ans = ""
   switch (minesAdjacent) {
     case 1:
@@ -62,6 +63,10 @@ export function getTextColorAndSize(
     default:
       break
   }
+  return ans
+}
+export function getTextSize(difficulty: Difficulty) {
+  let ans = ""
   switch (difficulty) {
     case "beginner":
       ans += " text-2xl"

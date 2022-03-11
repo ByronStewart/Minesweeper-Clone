@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from "../../../store"
 import { FaBomb, FaFlag } from "react-icons/fa"
 import { ImCross } from "react-icons/im"
 import { DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from "react"
-import { findTilesToReveal, getTextColorAndSize } from "./utils"
+import { findTilesToReveal, getTextColor, getTextSize } from "./utils"
 
 interface Props {
   cell: Tile
@@ -114,7 +114,7 @@ export const TileComponent: React.FC<Props> = ({
     " " +
     border +
     " " +
-    getTextColorAndSize(cell.minesAdjacent, options.difficulty)
+    getTextSize(options.difficulty)
 
   if (gameState == "finishedfailure") {
     switch (cell.revealState) {
@@ -139,7 +139,16 @@ export const TileComponent: React.FC<Props> = ({
       case RevealStates.REVEALED:
         const color = cell.minesAdjacent === -1 ? flagBgColor : revealedBgColor
         return (
-          <div {...props} className={commonClasses + " " + color}>
+          <div
+            {...props}
+            className={
+              commonClasses +
+              " " +
+              color +
+              " " +
+              getTextColor(cell.minesAdjacent)
+            }
+          >
             {cell.minesAdjacent === -1 ? (
               <FaBomb />
             ) : cell.minesAdjacent === 0 ? (
@@ -164,11 +173,23 @@ export const TileComponent: React.FC<Props> = ({
       )
     case RevealStates.HIDDEN:
       return (
-        <div {...props} className={commonClasses + " " + hiddenBgColor}></div>
+        <div
+          {...props}
+          className={commonClasses + " " + hiddenBgColor + " text-black"}
+        ></div>
       )
     case RevealStates.REVEALED:
       return (
-        <div {...props} className={commonClasses + " " + revealedBgColor}>
+        <div
+          {...props}
+          className={
+            commonClasses +
+            " " +
+            revealedBgColor +
+            " " +
+            getTextColor(cell.minesAdjacent)
+          }
+        >
           {cell.minesAdjacent === -1 ? (
             <FaBomb />
           ) : cell.minesAdjacent === 0 ? (
