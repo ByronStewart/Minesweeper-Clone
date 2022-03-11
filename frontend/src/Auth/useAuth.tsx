@@ -23,6 +23,7 @@ import {
 
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { IErrorMessage } from "../interfaces/IMessage"
+import { api } from "../services/api/api"
 
 const authContext = createContext<IAuth>({
   user: false,
@@ -62,22 +63,12 @@ const useProvideAuth = (): IAuth => {
     setRefresh(data.refresh)
     localStorage.setItem("access", data.access)
     localStorage.setItem("refresh", data.refresh)
+    api.defaults.headers.common["Authorization"] = "Bearer " + data.access
     const tokenDetails: IToken = jwt_decode(data.access)
     setUser({
       username: tokenDetails.username,
       id: tokenDetails.user_id,
     })
-  }
-
-  const handleLoginError = (
-    data: ILoginFailDTO,
-    response: Response
-  ): IErrorMessage => {
-    setUser(false)
-    return {
-      msg: data.detail,
-      status: response.status,
-    }
   }
 
   const signIn = async (
@@ -111,9 +102,11 @@ const useProvideAuth = (): IAuth => {
       callback({ detail: "something went wrong", status: -1 })
     }
   }
+
   const signOut = (callback?: (err?: IErrorMessage) => {}) => {
     localStorage.removeItem("access")
     localStorage.removeItem("refresh")
+    delete api.defaults.headers.common["Authorization"]
     setUser(false)
     setAccess(null)
     setRefresh(null)
@@ -121,6 +114,7 @@ const useProvideAuth = (): IAuth => {
       callback()
     }
   }
+
   const register = async (
     username: string,
     email: string,

@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
                 })
                 return
               }
-              navigate(from, { replace: true })
+              navigate("/game", { replace: true })
             })
           }}
         >

@@ -27,7 +27,7 @@ export const DefaultHeader: React.FC<Props> = () => {
             className="p-6 font-bold text-xl overflow-hidden"
             to="/profile"
           >
-            {auth.user}
+            {auth.user.username}
           </Link>
         )}
         <button className="p-6" onClick={toggleMenuOpen}>

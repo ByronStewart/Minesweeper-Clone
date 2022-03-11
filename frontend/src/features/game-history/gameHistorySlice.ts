@@ -6,7 +6,7 @@ import {
 } from "../../interfaces/MinesweeperScoreDTO"
 import { MINESWEEPER_SCORE_ROUTE } from "../../utils/constants"
 import { Difficulty } from "../current-game/interfaces"
-import axios from "axios"
+import { api } from "../../services/api/api"
 
 type IHistoryState = Record<Difficulty, GamePayload[]>
 
@@ -27,8 +27,9 @@ type GamePayload = {
 export const fetchGameHistory = createAsyncThunk(
   "gameHistory/fetchGameHistory",
   async () => {
-    const response = await fetch(MINESWEEPER_SCORE_ROUTE)
-    const data = await response.json()
+    const { data } = await api.get<GETMinesweeperScoreDTO[]>(
+      MINESWEEPER_SCORE_ROUTE
+    )
     return data
   }
 )
@@ -39,7 +40,7 @@ export const postGameScore = createAsyncThunk(
     const score: POSTMinesweeperScoreDTO = {
       score: { difficulty: 1, time: game.time },
     }
-    const { data } = await axios.post<GETMinesweeperScoreDTO>(
+    const { data } = await api.post<GETMinesweeperScoreDTO>(
       MINESWEEPER_SCORE_ROUTE,
       score
     )
