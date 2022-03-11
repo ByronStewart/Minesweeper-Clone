@@ -1,16 +1,32 @@
 import { Link, LinkProps } from "react-router-dom"
+import { JsxElement } from "typescript"
 
-interface Props extends LinkProps {}
+interface LProps extends LinkProps {}
 
-export const MainMenuItem: React.FC<Props> = ({
+export const MainMenuLink: React.FC<LProps> = ({
   children,
   className,
   ...rest
-}) => (
-  <Link
-    className={`block px-8 py-6 font-bold underline-offset-2 underline border-t border-slate-500 ${className}`}
-    {...rest}
-  >
-    {children}
-  </Link>
-)
+}) => {
+  const classes = `block px-8 py-6 font-bold underline-offset-2 underline border-t border-slate-500 ${className}`
+  return (
+    <Link className={classes} {...rest}>
+      {children}
+    </Link>
+  )
+}
+
+interface BProps extends React.HTMLAttributes<HTMLButtonElement> {}
+
+export const MainMenuButton: React.FC<BProps> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const classes = `w-full text-left block px-8 py-6 font-bold underline-offset-2 underline border-t border-slate-500 ${className}`
+  return (
+    <button className={classes} {...rest}>
+      {children}
+    </button>
+  )
+}

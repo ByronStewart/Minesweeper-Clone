@@ -4,7 +4,7 @@ import { useAuth } from "../../Auth/useAuth"
 import { GoHome, GoThreeBars, GoTriangleDown } from "react-icons/go"
 import { useToggle } from "../../hooks/useToggle"
 import { IconContext } from "react-icons"
-import { MainMenuItem } from "../MainMenuItem"
+import { MainMenuButton, MainMenuLink } from "../MainMenuItem"
 
 interface Props {}
 
@@ -22,13 +22,12 @@ export const DefaultHeader: React.FC<Props> = () => {
           <GoHome />
         </Link>
         {auth.user && (
-          <Link
+          <span
             onClick={setMenuClosed}
-            className="p-6 font-bold text-xl overflow-hidden"
-            to="/profile"
+            className="p-6 font-bold text-xl overflow-hidden cursor-pointer"
           >
             {auth.user.username}
-          </Link>
+          </span>
         )}
         <button className="p-6" onClick={toggleMenuOpen}>
           {isMenuOpen ? <GoTriangleDown /> : <GoThreeBars />}
@@ -37,31 +36,36 @@ export const DefaultHeader: React.FC<Props> = () => {
       {isMenuOpen && (
         <div className="relative z-10 bg-black">
           <div className="absolute top-0 left-0 w-full bg-white">
-            <MainMenuItem onClick={toggleMenuOpen} to="/instructions">
+            <MainMenuLink onClick={toggleMenuOpen} to="/instructions">
               How to play
-            </MainMenuItem>
-            <MainMenuItem onClick={toggleMenuOpen} to="/halloffame">
+            </MainMenuLink>
+            <MainMenuLink onClick={toggleMenuOpen} to="/halloffame">
               Hall of fame
-            </MainMenuItem>
+            </MainMenuLink>
             {auth.user ? (
-              <MainMenuItem to="/profile">Profile</MainMenuItem>
+              <>
+                <MainMenuLink to="/profile">Profile</MainMenuLink>
+                <MainMenuButton onClick={() => auth.signOut()}>
+                  logout
+                </MainMenuButton>
+              </>
             ) : (
               <>
-                <MainMenuItem onClick={toggleMenuOpen} to="/login">
+                <MainMenuLink onClick={toggleMenuOpen} to="/login">
                   Login
-                </MainMenuItem>
-                <MainMenuItem onClick={toggleMenuOpen} to="/register">
+                </MainMenuLink>
+                <MainMenuLink onClick={toggleMenuOpen} to="/register">
                   Register
-                </MainMenuItem>
+                </MainMenuLink>
               </>
             )}
-            <MainMenuItem
+            <MainMenuLink
               onClick={toggleMenuOpen}
               className="border-b"
               to="/game"
             >
               New Game
-            </MainMenuItem>
+            </MainMenuLink>
           </div>
         </div>
       )}
