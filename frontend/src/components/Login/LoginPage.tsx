@@ -4,8 +4,13 @@ import { useAuth } from "../../Auth/useAuth"
 import * as Yup from "yup"
 import { InputField } from "../Forms/InputField"
 import { GoMail } from "react-icons/go"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "../../store"
+import { postGameScore } from "../../features/game-history/gameHistorySlice"
 
 const LoginPage: React.FC = () => {
+  const currentGame = useSelector((state: RootState) => state.currentGame)
+  const dispatch = useDispatch<AppDispatch>()
   const location = useLocation()
   const navigate = useNavigate()
   const auth = useAuth()
@@ -24,13 +29,26 @@ const LoginPage: React.FC = () => {
             password: Yup.string().required(),
           })}
           onSubmit={(values, helpers) => {
-            auth.signIn(values.email, values.password, (err) => {
+            auth.signIn(values.email, values.password, (user, err) => {
               if (err) {
                 console.log(err)
                 helpers.setErrors({
                   email: err.detail,
                 })
                 return
+              }
+              // post the game to the server
+              if (currentGame.gameState == "finishedsuccess") {
+                if (user) {
+                  dispatch(
+                    postGameScore({
+                      created_at: Date.now(),
+                      difficulty: currentGame.options.difficulty,
+                      owner: user.username,
+                      time: currentGame.gameProperties.time,
+                    })
+                  )
+                }
               }
               navigate("/game", { replace: true })
             })

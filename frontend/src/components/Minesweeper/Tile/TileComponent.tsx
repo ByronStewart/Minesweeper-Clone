@@ -20,7 +20,7 @@ export const TileComponent: React.FC<Props> = ({
   handleGameStart,
   flagOnTouch,
 }) => {
-  const { gameState, board, options } = useSelector(
+  const { gameState, board, options, gameProperties } = useSelector(
     (state: RootState) => state.currentGame
   )
   const dispatch = useDispatch<AppDispatch>()
@@ -75,7 +75,7 @@ export const TileComponent: React.FC<Props> = ({
     HTMLDivElement
   > = {
     onClick: () => {
-      if (flagOnTouch) {
+      if (gameProperties.flagOnLeftClick) {
         handleFlag()
       } else {
         handleReveal()

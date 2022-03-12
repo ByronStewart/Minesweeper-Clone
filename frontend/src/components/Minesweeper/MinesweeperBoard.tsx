@@ -38,13 +38,17 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
     }, 1000)
   }
 
-  // clean up
+  //clean up
   useEffect(() => {
+    if (gameState.gameState == "running") {
+      timer.current = setInterval(() => {
+        dispatch(incrementTime())
+      }, 1000)
+    }
     return () => {
       cleanupGameEnd()
-      dispatch(resetGame())
     }
-  }, [dispatch])
+  }, [])
 
   // check for game over on state change
   useEffect(() => {

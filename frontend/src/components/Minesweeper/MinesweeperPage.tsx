@@ -5,7 +5,10 @@ import { DifficultySelectorWindow } from "./StatusWindows/DifficultySelectorWind
 import { Modal } from "../Modal"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "../../store"
-import { resetGame } from "../../features/current-game/currentGameSlice"
+import {
+  resetGame,
+  toggleFlagOnLeftClick,
+} from "../../features/current-game/currentGameSlice"
 import MinesweeperBoard from "./MinesweeperBoard"
 import { MinesweeperStatusBar } from "./StatusWindows/MinesweeperStatusBar"
 import { FaFlag } from "react-icons/fa"
@@ -15,7 +18,7 @@ import { useToggle } from "../../hooks/useToggle"
 type Props = {}
 
 const MinesweeperPage: React.FC<Props> = () => {
-  const { gameState: gameStatus } = useSelector(
+  const { gameState: gameStatus, gameProperties } = useSelector(
     (state: RootState) => state.currentGame
   )
   const dispatch = useDispatch()
@@ -51,10 +54,10 @@ const MinesweeperPage: React.FC<Props> = () => {
           <MinesweeperBoard flagOnTouch={flagOnTouch} />
         </div>
         <button
-          onClick={toggleFlagOnTouch}
+          onClick={() => dispatch(toggleFlagOnLeftClick())}
           className="w-full bg-red-400 text-2xl py-5 block mx-auto"
         >
-          {flagOnTouch ? (
+          {gameProperties.flagOnLeftClick ? (
             <>
               <FaFlag className="inline-block mr-2" />
               <span>Flag</span>

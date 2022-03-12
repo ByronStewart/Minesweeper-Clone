@@ -6,14 +6,20 @@ export interface IAuth {
   signIn: (
     email: string,
     password: string,
-    callback: (err?: ILoginFailDTO & { status: number }) => void
+    callback: (
+      user: IUser | false,
+      err?: ILoginFailDTO & { status: number }
+    ) => void
   ) => Promise<void>
   signOut: (callback?: (err?: IErrorMessage) => {}) => void
   register: (
     username: string,
     email: string,
     password: string,
-    callback: (err?: IRegisterFailDTO & { status: number }) => void
+    callback: (
+      user: IUser | false,
+      err?: IRegisterFailDTO & { status: number }
+    ) => void
   ) => Promise<void>
 }
 

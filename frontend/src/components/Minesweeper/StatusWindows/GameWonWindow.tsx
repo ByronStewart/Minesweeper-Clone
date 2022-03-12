@@ -7,10 +7,12 @@ import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "../../../store"
 import { resetGame } from "../../../features/current-game/currentGameSlice"
+import { useAuth } from "../../../Auth/useAuth"
 
 interface Props {}
 
 export const GameWonWindow: React.FC<Props> = () => {
+  const auth = useAuth()
   const dispatch = useDispatch()
   const { time } = useSelector((state: RootState) => {
     const difficulty = state.currentGame.options.difficulty
@@ -39,9 +41,11 @@ export const GameWonWindow: React.FC<Props> = () => {
       >
         Play again
       </button>
-      <Link className="btn-modal bg-red-400 mt-1 mx-auto" to="/login">
-        Login to save scores
-      </Link>
+      {!auth.user && (
+        <Link className="btn-modal bg-red-400 mt-1 mx-auto" to="/login">
+          Login to save scores
+        </Link>
+      )}
     </div>
   )
 }

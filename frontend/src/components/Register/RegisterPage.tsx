@@ -4,8 +4,13 @@ import { Link, useNavigate } from "react-router-dom"
 import { InputField } from "../Forms/InputField"
 import { useAuth } from "../../Auth/useAuth"
 import * as Yup from "yup"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "../../store"
+import { postGameScore } from "../../features/game-history/gameHistorySlice"
 
 const RegisterPage: React.FC = () => {
+  const currentGame = useSelector((state: RootState) => state.currentGame)
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { register } = useAuth()
   return (
@@ -24,7 +29,7 @@ const RegisterPage: React.FC = () => {
             password: Yup.string().required(),
           })}
           onSubmit={({ email, password, username }, helpers) => {
-            register(username, email, password, (err) => {
+            register(username, email, password, (user, err) => {
               if (err) {
                 console.log(err)
                 if (err.username) {
@@ -33,9 +38,22 @@ const RegisterPage: React.FC = () => {
                     email: err.email,
                     password: err.password,
                   })
-                  const status = err.status
                 }
                 return
+              }
+
+              // post the game score on login
+              if (currentGame.gameState == "finishedsuccess") {
+                if (user) {
+                  dispatch(
+                    postGameScore({
+                      created_at: Date.now(),
+                      difficulty: currentGame.options.difficulty,
+                      owner: user.username,
+                      time: currentGame.gameProperties.time,
+                    })
+                  )
+                }
               }
               navigate("/", {
                 replace: true,

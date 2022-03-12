@@ -38,4 +38,5 @@ export type GameStates =
 export type GameProperties = {
   time: number
   numMinesRemaining: number
+  flagOnLeftClick: boolean
 }

@@ -58,7 +58,7 @@ const useProvideAuth = (): IAuth => {
   const [access, setAccess] = useState<string | null>(null)
   const [refresh, setRefresh] = useState<string | null>(null)
 
-  const handleLoginUser = (data: ILoginSuccessDTO) => {
+  const handleLoginUser = (data: ILoginSuccessDTO): IUser => {
     setAccess(data.access)
     setRefresh(data.refresh)
     localStorage.setItem("access", data.access)
@@ -69,12 +69,19 @@ const useProvideAuth = (): IAuth => {
       username: tokenDetails.username,
       id: tokenDetails.user_id,
     })
+    return {
+      username: tokenDetails.username,
+      id: tokenDetails.user_id,
+    }
   }
 
   const signIn = async (
     email: string,
     password: string,
-    callback: (err?: ILoginFailDTO & { status: number }) => void
+    callback: (
+      user: IUser | false,
+      err?: ILoginFailDTO & { status: number }
+    ) => void
   ) => {
     try {
       const response = await fetch(LOGIN_ROUTE, {
@@ -89,17 +96,17 @@ const useProvideAuth = (): IAuth => {
       })
       if (response.ok) {
         const data: ILoginSuccessDTO = await response.json()
-        handleLoginUser(data)
-        callback()
+        const user = handleLoginUser(data)
+        callback(user)
       } else {
         const error: ILoginFailDTO = await response.json()
         setUser(false)
-        callback({ ...error, status: response.status })
+        callback(false, { ...error, status: response.status })
       }
     } catch (error) {
       console.error(error)
       signOut()
-      callback({ detail: "something went wrong", status: -1 })
+      callback(false, { detail: "something went wrong", status: -1 })
     }
   }
 
@@ -119,7 +126,10 @@ const useProvideAuth = (): IAuth => {
     username: string,
     email: string,
     password: string,
-    callback: (err?: IRegisterFailDTO & { status: number }) => void
+    callback: (
+      user: IUser | false,
+      err?: IRegisterFailDTO & { status: number }
+    ) => void
   ) => {
     try {
       const response = await fetch(REGISTER_ROUTE, {
@@ -135,16 +145,16 @@ const useProvideAuth = (): IAuth => {
       })
       if (response.ok) {
         const data: ILoginSuccessDTO = await response.json()
-        handleLoginUser(data)
-        callback()
+        const user = handleLoginUser(data)
+        callback(user)
       } else {
         const error: IRegisterFailDTO = await response.json()
         //const errorMessage = handleRegisterError(error, response);
-        callback({ ...error, status: response.status })
+        callback(false, { ...error, status: response.status })
       }
     } catch (error) {
       signOut()
-      callback({ status: 500 })
+      callback(false, { status: 500 })
     }
   }
 

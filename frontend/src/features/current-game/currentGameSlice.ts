@@ -11,6 +11,7 @@ export const initialState: IGameState = {
   gameProperties: {
     time: 0,
     numMinesRemaining: getInitialMinesRemainingFromOptions(BEGINNER),
+    flagOnLeftClick: false,
   },
   gameState: "awaiting options",
   options: BEGINNER,
@@ -30,6 +31,7 @@ export const currentGameSlice = createSlice({
       state.gameProperties.numMinesRemaining = BEGINNER.numMines
       state.options = BEGINNER
       state.gameState = "pending"
+      state.gameProperties.flagOnLeftClick = false
       state.board = generateInitialBoard(
         BEGINNER.numRows,
         BEGINNER.numCols,
@@ -41,6 +43,7 @@ export const currentGameSlice = createSlice({
       state.gameProperties.numMinesRemaining = INTERMEDIATE.numMines
       state.options = INTERMEDIATE
       state.gameState = "pending"
+      state.gameProperties.flagOnLeftClick = false
       state.board = generateInitialBoard(
         INTERMEDIATE.numRows,
         INTERMEDIATE.numCols,
@@ -52,6 +55,7 @@ export const currentGameSlice = createSlice({
       state.gameProperties.numMinesRemaining = ADVANCED.numMines
       state.options = ADVANCED
       state.gameState = "pending"
+      state.gameProperties.flagOnLeftClick = false
       state.board = generateInitialBoard(
         ADVANCED.numRows,
         ADVANCED.numCols,
@@ -103,10 +107,15 @@ export const currentGameSlice = createSlice({
         state.gameProperties.numMinesRemaining = action.payload
       }
     },
+    toggleFlagOnLeftClick: (state) => {
+      state.gameProperties.flagOnLeftClick =
+        !state.gameProperties.flagOnLeftClick
+    },
     resetGame: (state) => {
       state.gameProperties.time = 0
       state.gameProperties.numMinesRemaining =
         getInitialMinesRemainingFromOptions(state.options)
+      state.gameProperties.flagOnLeftClick = false
       state.gameState = "pending"
       state.board = generateInitialBoard(
         state.options.numRows,
@@ -142,5 +151,6 @@ export const {
   incrementTime,
   removeHighlightTile,
   getOptions,
+  toggleFlagOnLeftClick,
 } = currentGameSlice.actions
 export default currentGameSlice.reducer
