@@ -1,7 +1,5 @@
-import reducer, { initialState } from "./currentGameSlice"
+import { initialState } from "./currentGameSlice"
 import { BEGINNER } from "./constants"
-import { store } from "../../store"
-import { AnyAction } from "@reduxjs/toolkit"
 
 describe("current game slice tests", () => {
   it("the initial state should have the correct number of mines in the gameboard", () => {
