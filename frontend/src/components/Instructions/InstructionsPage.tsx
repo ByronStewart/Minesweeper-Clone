@@ -58,10 +58,16 @@ export const InstructionsPage: React.FC = () => {
           <div
             className={`mx-10 text-lg ${tabState.page !== 0 ? "hidden" : ""}`}
           >
-            <p>Swipe left to flag</p>
+            <p>Left click on a tile to reveal it</p>
+            <p>Right click on a tile to flag it as a mine</p>
+            <p>
+              tip: on mobile you can toggle between flagging and revealing on
+              tap
+            </p>
+            {/* <p>Swipe left to flag</p>
             <p>Swipe right to clear</p>
             <p>Swipe down to reveal</p>
-            <p>Swipe up to cancel</p>
+            <p>Swipe up to cancel</p> */}
           </div>
           <div
             className={`mx-10 text-lg ${tabState.page !== 1 ? "hidden" : ""}`}
