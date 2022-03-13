@@ -59,7 +59,8 @@ Major Technologies used:
 6. run the frontend react development server (should be running on port 3000)
 
 ```
-  ./frontend/npm run start
+  cd frontend
+  npm run start
 ```
 
 7. Navigate to http://localhost:3000 to use the app
