@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "../../store"
 import {
   resetGame,
+  startGame,
   toggleFlagOnLeftClick,
 } from "../../features/current-game/currentGameSlice"
 import MinesweeperBoard from "./MinesweeperBoard"
@@ -27,35 +28,29 @@ const MinesweeperPage: React.FC<Props> = () => {
   return (
     <>
       {gameStatus === "awaiting options" && (
-        <Modal onOpen={() => console.log("hi")}>
+        <Modal onClose={() => dispatch(startGame())}>
           <DifficultySelectorWindow />
         </Modal>
       )}
       {gameStatus === "finishedsuccess" && (
-        <Modal
-          onOpen={() => console.log("hi")}
-          onClose={() => dispatch(resetGame())}
-        >
+        <Modal onClose={() => dispatch(resetGame())}>
           <GameWonWindow />
         </Modal>
       )}
       {gameStatus === "finishedfailure" && (
-        <Modal
-          onOpen={() => console.log("hi")}
-          //onClose={}
-        >
+        <Modal>
           <GameLostWindow />
         </Modal>
       )}
 
       <div className="h-full w-full flex flex-col">
         <MinesweeperStatusBar />
-        <div className="flex-grow bg-blue-800 self-center w-full flex justify-center items-center">
+        <div className="flex-grow bg-gray-700 self-center w-full flex justify-center items-center">
           <MinesweeperBoard flagOnTouch={flagOnTouch} />
         </div>
         <button
           onClick={() => dispatch(toggleFlagOnLeftClick())}
-          className="w-full bg-red-400 text-2xl py-5 block mx-auto"
+          className="w-full xl:hidden bg-gray-300 text-2xl py-5 block mx-auto"
         >
           {gameProperties.flagOnLeftClick ? (
             <>

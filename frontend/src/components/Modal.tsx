@@ -1,9 +1,8 @@
 interface Props {
-  onOpen: VoidFunction
   onClose?: VoidFunction
 }
 
-export const Modal: React.FC<Props> = ({ children, onOpen, onClose }) => {
+export const Modal: React.FC<Props> = ({ children, onClose }) => {
   return (
     <div
       onClick={onClose}

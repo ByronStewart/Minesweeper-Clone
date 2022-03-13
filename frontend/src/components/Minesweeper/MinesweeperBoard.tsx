@@ -26,7 +26,7 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
   const timer = useRef<NodeJS.Timer | undefined>(undefined)
 
   const cleanupGameEnd = () => {
-    if (timer.current) {
+    if (timer.current && gameState.gameState !== "awaiting options") {
       clearInterval(timer.current)
     }
   }

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 
 const IndexPage: React.FC = () => {
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="flex bg-white flex-col justify-between md:text-center max-w-3xl mx-auto h-full">
       <div className="mx-6 mt-10">
         <h1 className="text-5xl">Modern Minesweeper</h1>
         <p className="mt-28 font-thin">

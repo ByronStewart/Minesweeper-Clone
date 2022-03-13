@@ -16,7 +16,7 @@ const LoginPage: React.FC = () => {
   const auth = useAuth()
   const from = (location.state as { from?: Location })?.from?.pathname || "/"
   return (
-    <div className="mt-20 mx-8">
+    <div className="pt-20 px-8 h-full bg-white mx-auto max-w-2xl">
       <h2 className="text-3xl font-semibold">Sign In</h2>
       <div className="mt-8">
         <Formik

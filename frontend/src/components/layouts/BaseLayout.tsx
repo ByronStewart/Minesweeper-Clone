@@ -10,7 +10,7 @@ const BaseLayout: React.FC<Props> = () => {
       <div className="w-full">
         <DefaultHeader />
       </div>
-      <div className="flex-grow relative">
+      <div className="flex-grow relative bg-gray-200">
         <Outlet />
       </div>
     </div>

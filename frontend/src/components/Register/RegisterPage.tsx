@@ -14,7 +14,7 @@ const RegisterPage: React.FC = () => {
   const navigate = useNavigate()
   const { register } = useAuth()
   return (
-    <div className="mt-20 mx-8">
+    <div className="bg-white mx-auto max-w-2xl pt-20 px-8 h-full">
       <h2 className="text-3xl font-semibold">Register</h2>
       <div className="mt-8">
         <Formik
@@ -41,7 +41,6 @@ const RegisterPage: React.FC = () => {
                 }
                 return
               }
-
               // post the game score on login
               if (currentGame.gameState == "finishedsuccess") {
                 if (user) {

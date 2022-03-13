@@ -17,7 +17,7 @@ export const DefaultHeader: React.FC<Props> = () => {
         size: "1.8em",
       }}
     >
-      <div className="flex justify-between">
+      <div className="flex justify-between bg-gray-100">
         <Link onClick={setMenuClosed} className="p-6" to="/">
           <GoHome />
         </Link>
@@ -43,12 +43,9 @@ export const DefaultHeader: React.FC<Props> = () => {
               Hall of fame
             </MainMenuLink>
             {auth.user ? (
-              <>
-                <MainMenuLink to="/profile">Profile</MainMenuLink>
-                <MainMenuButton onClick={() => auth.signOut()}>
-                  logout
-                </MainMenuButton>
-              </>
+              <MainMenuButton onClick={() => auth.signOut()}>
+                Logout
+              </MainMenuButton>
             ) : (
               <>
                 <MainMenuLink onClick={toggleMenuOpen} to="/login">

@@ -48,7 +48,10 @@ export const InstructionsPage: React.FC = () => {
     preventDefaultTouchmoveEvent: true,
   })
   return (
-    <div {...swipeHandlers} className="flex justify-between h-full flex-col">
+    <div
+      {...swipeHandlers}
+      className="flex bg-white max-w-3xl mx-auto justify-between h-full flex-col"
+    >
       <h2 className="text-3xl ml-7 mt-10">
         Modern <br></br>Minesweeper
       </h2>
