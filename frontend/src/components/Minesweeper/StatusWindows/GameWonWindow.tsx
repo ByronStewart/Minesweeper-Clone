@@ -1,27 +1,26 @@
-import { BiTime } from "react-icons/bi"
+import { BiTime } from "react-icons/bi";
 import {
   formatMinsAndSeconds,
   secondsToMinsAndSeconds,
-} from "../../../utils/lib"
-import { Link } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../../../store"
-import { resetGame } from "../../../features/current-game/currentGameSlice"
-import { useAuth } from "../../../Auth/useAuth"
+} from "../../../utils/lib";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store";
+import { resetGame } from "../../../features/current-game/currentGameSlice";
+import { useAuth } from "../../../Auth/useAuth";
 
 interface Props {}
 
 export const GameWonWindow: React.FC<Props> = () => {
-  const auth = useAuth()
-  const dispatch = useDispatch()
+  const auth = useAuth();
+  const dispatch = useDispatch();
   const { time } = useSelector((state: RootState) => {
-    const difficulty = state.currentGame.options.difficulty
     return {
       time: state.currentGame.gameProperties.time,
-    }
-  })
+    };
+  });
   const { mins: currentMins, seconds: currentSeconds } =
-    secondsToMinsAndSeconds(time)
+    secondsToMinsAndSeconds(time);
 
   return (
     <div className="text-center">
@@ -36,7 +35,7 @@ export const GameWonWindow: React.FC<Props> = () => {
       <button
         className="btn-modal mt-2 mx-auto"
         onClick={() => {
-          dispatch(resetGame())
+          dispatch(resetGame());
         }}
       >
         Play again
@@ -47,5 +46,5 @@ export const GameWonWindow: React.FC<Props> = () => {
         </Link>
       )}
     </div>
-  )
-}
+  );
+};

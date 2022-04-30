@@ -12,11 +12,9 @@ import { TileComponent } from "./Tile/TileComponent";
 import { useAuth } from "../../Auth/useAuth";
 import { postGameScore } from "../../features/game-history/gameHistorySlice";
 
-type Props = {
-  flagOnTouch: boolean;
-};
+type Props = {};
 
-const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
+const MinesweeperBoard: React.FC<Props> = () => {
   const auth = useAuth();
   const gameState = useSelector((state: RootState) => state.currentGame);
   const dispatch = useDispatch<AppDispatch>();
@@ -118,7 +116,6 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
       {gameState.board.map((row) =>
         row.map((cell) => (
           <TileComponent
-            flagOnTouch={flagOnTouch}
             key={`${cell.x},${cell.y}`}
             handleGameStart={handleGameStart}
             cell={cell}

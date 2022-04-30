@@ -352,6 +352,8 @@ The files here follow a typical React single page application setup.
 
 This folder contains all the source files for the frontend of the project.
 
+`src/hooks/useToggle.tsx` This is a generic react hook built to allow easy toggling between boolean react state. It exports the state, and functions to handle setting false, true and toggling.
+
 `src/useAuth.tsx` This is a custom built react hook to handle frontend authentication in the project. It utilizes the react context api
 
 The RequireAuth function is a react higher order component to ensure that the user is authenticated before allowing access to the component. If authentication fails it redirects to the login page and holds to state to redirect to on successful login.
@@ -402,6 +404,87 @@ This folder contains all the components responsible for laying out each page
 `Layouts/DefaultHeader.tsx` This is the top bar of the UI. It will show the username if the current user is logged in. The UI features a dropdown menu which contains links to all the pages in the application. It also allows the user to login/register and logout depending on the login state of the user.
 
 ### `frontend/src/components/Minesweeper`
+
+`Minesweeper/MinesweeperPage.tsx` This is the base page for the minesweeper game. It houses all the main components for the minesweeper game. The game state changes what is shown on the page. If the game is not running a modal is displayed to the user for them to select the difficulty of the game. If the game was finished in a success a modal is shown with the stats and a link to the login page if the user is not logged in. If the game has not started then a difficulty selection modal is displayed. There is a status bar to show the current state of the game with the game board below. There is also a button to toggle the ability to flag and reveal for touch devices.
+
+`Minesweeper/StatusWindows/DifficultySelectorWindow.tsx` This file contains the difficulty selector component. It will be shown in a modal and contains the buttons to toggle the difficulties.
+
+`Minesweeper/StatusWindows/GameLostWindow.tsx` This file is the game lost component which will be shown in a modal. It has the ability to reset the game.
+
+`Minesweeper/StatusWindows/GameWonWindow.tsx` the game won window has a button to reset the game and a link to the login page so the user can save their scores.
+
+`Minesweeper/StatusWindows/MinesweeperStatusBar.tsx` This component shows the current state of the game. The gamestate is housed in a redux store. This component queries the redux store and will render the time, number of mines remaining and a button to start a new game.
+
+`Minesweeper/MinesweeperBoard.tsx` This file contains a the logic for checking if the game is over and to clean up state when the game ends. The component checks to see if the game is over on any change in the state and will dispatch the appropriate actions. How the board is rendered will depend on the difficulty that is displayed. The board will render a Tile component for each square on the board. The layout is set using css grid. When the game starts it will start an interval which will dispatch in increment time action.
+
+`Minesweeper/Tile/TileComponent.tsx` This file contains all the rendering logic for each tile in the game. The tile can be in a flagged, revealed or hidden. And the rendering logic also depends on if the game is running or not. There is a lot of conditional logic to apply different classes based on the current states to get the desired effects. For example if the game is over and the square is a bomb then the tile component will render the bomb but it will be hidden otherwise.
+
+`Minesweeper/Tile/utils.ts` This has some helper functions to assist in rendering the tiles or revealing the tiles on click. It contains the following functions:
+
+- findTilesToReveal: This is a helper function which, if the cell has no mines surrounding it will do a depth first search to find all the cells which can be revealed automatically. It returns an array of tiles which should be revealed.
+
+- getTextColor: This function will return a string with the correct css class to apply based on the value in the cell
+
+- getTextSize: this function will return the correct css class to apply for the difficulty set
+
+### `frontend/src/features`
+
+This is where the redux slices will be housed which control the state of the game and the highscores.
+
+`features/current-game/constants.ts` This file holds the preset options for the three difficulty levels. They will all implement IMinesweeperOptions.
+
+`features/current-game/currentGameSlice.ts` This file has the slice of state which represents the game of minesweeper. The slices are made using the reduxtoolkit package. It contains the initialState contant and the reducers to set difficulty, update time, get options, highlight and remove highlights from a tile, flag and reveal tiles, increment the time, update the mines remaining, toggle flag, start/end and reset the game.
+
+`features/current-game/currentGameSlice.test.ts` This has a simple test to check that the game gets set with the correct amount of mines.
+
+`features/current-game/interfaces.ts` This file contains typescript interfaces, types and enums for type safety in the frontend of the project. There is one for the gamestate, tile, minestatus, minesweeper options, difficulty, gamestates and gameproperties.
+
+`features/current-game/utils.ts` This file contains utility functions which are useful when running the game of minesweeper.
+
+- It has a function to generate the initial board: this function will create a 2D array with a number of tiles stated as mines
+- It has a function to get the neighbors of the tiles. This avoids any boundary conditions of the array.
+- It has a simple function to get the initial mines remaining in a given game.
+
+`features/game-history/gameHistorySlice.ts` This file contains all the logic to handle the highscores page. It has the state as a redux store and helper functions:
+
+- fetchGameHistory is a thunk to get the highscores from the api
+- postGameScore is a thunk to post a game score to the api
+- makeGamePayloadFromDTO is a helper function to convert the api response into a response for the state
+- gameHistorySlice is the slice of state. It has reducers to add a game and a fulfilled fetch of data.
+
+### `frontend/src/interfaces`
+
+`interfaces/IAuth.ts` This file contains the relevant interfaces for the authentication hook.
+It has the following interfaces: IAuth, IToken, ILoginSuccessDTO, IRegisterFailDTO, ILoginFailDTO, IUser
+
+`interfaces/IMessage.ts` This has the interface that the error messages must use
+
+`interfaces/MinesweeperScoreDTO.ts` This file has the interfaces of the data transfer objects used. This is to help when communicating between the API. It has an enum minesweeperAPIDifficultyTypes, the interface POSTMinesweeperScoreDTO and GETMinesweeperScoreDTO.
+
+### `frontend/src`
+
+`src/services/api/api.ts` This has the axios configuration which will be used throughout the application
+
+`src/utils/constants.ts` This has constants for the api which is used throughout the application to have a single source of truth
+
+`src/utils/lib.ts` This has some utility functions:
+
+- secondsToMinsAndSeconds: Converts seconds to an object containing the number of minutes and the number of seconds
+- formatMinsAndSeconds: takes a number of minutes and a number of seconds and returns a string to display the time
+
+`src/App.tsx` This file is the root react component from which the app begins. It contains has the user provider and the routes using react router.
+
+`src/index.css` This has some css classes built with tailwind css for common features such as buttons and to import the custom google font
+
+`src/index.tsx` This is the file which renders the react app to the dom. It also provides the redux store to the application.
+
+`src/react-app-env.d.ts` A default file created with create react app which references the react scripts
+
+`src/reportWebVitals.ts` Default file provided with create react app
+
+`src/setupTests.ts` configuration file for jest testing with react
+
+`src/store.ts` This is the root redux store which imports the currentGame and gameHistory slices described earlier.
 
 ## Conclusion
 

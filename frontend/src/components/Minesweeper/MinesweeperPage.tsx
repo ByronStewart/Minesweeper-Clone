@@ -1,29 +1,27 @@
-import { GameLostWindow } from "./StatusWindows/GameLostWindow"
-import { GameWonWindow } from "./StatusWindows/GameWonWindow"
+import { GameLostWindow } from "./StatusWindows/GameLostWindow";
+import { GameWonWindow } from "./StatusWindows/GameWonWindow";
 
-import { DifficultySelectorWindow } from "./StatusWindows/DifficultySelectorWindow"
-import { Modal } from "../Modal"
-import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../../store"
+import { DifficultySelectorWindow } from "./StatusWindows/DifficultySelectorWindow";
+import { Modal } from "../Modal";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../store";
 import {
   resetGame,
   startGame,
   toggleFlagOnLeftClick,
-} from "../../features/current-game/currentGameSlice"
-import MinesweeperBoard from "./MinesweeperBoard"
-import { MinesweeperStatusBar } from "./StatusWindows/MinesweeperStatusBar"
-import { FaFlag } from "react-icons/fa"
-import { FiEye } from "react-icons/fi"
-import { useToggle } from "../../hooks/useToggle"
+} from "../../features/current-game/currentGameSlice";
+import MinesweeperBoard from "./MinesweeperBoard";
+import { MinesweeperStatusBar } from "./StatusWindows/MinesweeperStatusBar";
+import { FaFlag } from "react-icons/fa";
+import { FiEye } from "react-icons/fi";
 
-type Props = {}
+type Props = {};
 
 const MinesweeperPage: React.FC<Props> = () => {
   const { gameState: gameStatus, gameProperties } = useSelector(
     (state: RootState) => state.currentGame
-  )
-  const dispatch = useDispatch()
-  const [flagOnTouch, toggleFlagOnTouch] = useToggle(false)
+  );
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -46,7 +44,7 @@ const MinesweeperPage: React.FC<Props> = () => {
       <div className="h-full w-full flex flex-col">
         <MinesweeperStatusBar />
         <div className="flex-grow bg-gray-700 self-center w-full flex justify-center items-center">
-          <MinesweeperBoard flagOnTouch={flagOnTouch} />
+          <MinesweeperBoard />
         </div>
         <button
           onClick={() => dispatch(toggleFlagOnLeftClick())}
@@ -66,7 +64,7 @@ const MinesweeperPage: React.FC<Props> = () => {
         </button>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MinesweeperPage
+export default MinesweeperPage;
