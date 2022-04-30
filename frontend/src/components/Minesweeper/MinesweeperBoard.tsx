@@ -1,59 +1,57 @@
-import React, { useEffect, useRef } from "react"
-
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "../../store"
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 import {
   incrementTime,
   loseGame,
-  resetGame,
   startGame,
   winGame,
-} from "../../features/current-game/currentGameSlice"
-import { RevealStates } from "../../features/current-game/interfaces"
-import { TileComponent } from "./Tile/TileComponent"
-import { useAuth } from "../../Auth/useAuth"
-import { postGameScore } from "../../features/game-history/gameHistorySlice"
+} from "../../features/current-game/currentGameSlice";
+import { RevealStates } from "../../features/current-game/interfaces";
+import { TileComponent } from "./Tile/TileComponent";
+import { useAuth } from "../../Auth/useAuth";
+import { postGameScore } from "../../features/game-history/gameHistorySlice";
 
 type Props = {
-  flagOnTouch: boolean
-}
+  flagOnTouch: boolean;
+};
 
 const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
-  const auth = useAuth()
-  const gameState = useSelector((state: RootState) => state.currentGame)
-  const dispatch = useDispatch<AppDispatch>()
+  const auth = useAuth();
+  const gameState = useSelector((state: RootState) => state.currentGame);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const timer = useRef<NodeJS.Timer | undefined>(undefined)
+  const timer = useRef<NodeJS.Timer | undefined>(undefined);
 
   const cleanupGameEnd = () => {
     if (timer.current && gameState.gameState !== "awaiting options") {
-      clearInterval(timer.current)
+      clearInterval(timer.current);
     }
-  }
+  };
 
   const handleGameStart = () => {
-    dispatch(startGame())
+    dispatch(startGame());
     timer.current = setInterval(() => {
-      dispatch(incrementTime())
-    }, 1000)
-  }
+      dispatch(incrementTime());
+    }, 1000);
+  };
 
   //clean up
   useEffect(() => {
-    if (gameState.gameState == "running") {
+    if (gameState.gameState === "running") {
       timer.current = setInterval(() => {
-        dispatch(incrementTime())
-      }, 1000)
+        dispatch(incrementTime());
+      }, 1000);
     }
     return () => {
-      cleanupGameEnd()
-    }
-  }, [])
+      cleanupGameEnd();
+    };
+  }, []);
 
   // check for game over on state change
   useEffect(() => {
     const checkAndHandleGameOver = () => {
-      let numRevealedTiles = 0
+      let numRevealedTiles = 0;
       for (const row of gameState.board) {
         for (const tile of row) {
           if (tile.revealState === RevealStates.REVEALED) {
@@ -61,21 +59,21 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
             if (tile.minesAdjacent === -1) {
               // game is over
               // clear the game timer
-              dispatch(loseGame())
-              return
+              dispatch(loseGame());
+              return;
             }
             // add to the revealed count if is revealed
-            numRevealedTiles++
+            numRevealedTiles++;
           }
         }
       }
       // check if all the tiles that need to be revealed are revealed
       const numTilesNeededToReveal =
         gameState.options.numCols * gameState.options.numRows -
-        gameState.options.numMines
+        gameState.options.numMines;
       if (numRevealedTiles === numTilesNeededToReveal) {
         // successfully cleared all the mines
-        dispatch(winGame())
+        dispatch(winGame());
         if (auth.user) {
           dispatch(
             postGameScore({
@@ -84,29 +82,29 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
               owner: auth.user.username,
               time: gameState.gameProperties.time,
             })
-          )
+          );
         }
       }
-    }
+    };
 
     if (gameState.gameState === "running") {
-      checkAndHandleGameOver()
+      checkAndHandleGameOver();
     } else {
-      cleanupGameEnd()
+      cleanupGameEnd();
     }
-  }, [gameState])
+  }, [gameState]);
 
-  let gridsize: string
+  let gridsize: string;
   switch (gameState.options.difficulty) {
     case "beginner":
-      gridsize = "40px"
-      break
+      gridsize = "40px";
+      break;
     case "intermediate":
-      gridsize = "30px"
-      break
+      gridsize = "30px";
+      break;
     case "advanced":
-      gridsize = "30px"
-      break
+      gridsize = "30px";
+      break;
   }
 
   return (
@@ -128,6 +126,6 @@ const MinesweeperBoard: React.FC<Props> = ({ flagOnTouch }) => {
         ))
       )}
     </div>
-  )
-}
-export default MinesweeperBoard
+  );
+};
+export default MinesweeperBoard;

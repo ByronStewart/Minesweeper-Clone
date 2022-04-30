@@ -369,6 +369,40 @@ useProvideAuth contains the logic for setting up the authentication. It implemen
 
 `src/useAuth.test.tsx` This contains all the tests to ensure the auth can login a user, logout a user and register a user.
 
+`src/components/Forms/InputField.tsx` This is a generic input field component built to interface with the Formik library. It accepts an icon, placeholder, and type. It contains all the logic to show error messages should they be returned from the form it was submitted from
+
+`src/components/Index/IndexPage.tsx` This is the default homepage of the app. It is a dumb component which links to other pages in the application.
+
+`src/components/Login/LoginPage.tsx` This is the login page. It displays a form to login the user. It remembers where the user nagivated from and will redirect them there on success. The login page has validation both on the client side and on the server side. Errors are displayed on their respective fields to provide an enhanced user experience. If the user navigated here upon completing a game, the game state is submitted upon login.
+
+`src/components/Register/RegisterPage.tsx` Like the login page this page displays a form to register the user. The validation works in the same way as the login page and it will also submit the game state to the server on a registration success.
+
+`src/components/MainMenuItem.tsx` This file holds two commonly used components in the main menu. They are components to provide default stying to a link and a button. They can take their own class props to define additional classes other than the base styles.
+
+`src/components/Modal.tsx` This is a modal component which allows an onClose function to be passed, it handles the styling and the propagation behaviour expected of a modal
+
+`src/components/Instructions/InstructionsPage.tsx` This is the page which gives the user instructions on how to play the game. There are 3 different pages to the instructions. The user can paginate between the 3 pages using the pagination component. It has swipe functionality for mobile devices to help change between the pages.
+
+`src/components/Instructions/Pagination.tsx` This pagination component accepts a function to go forward, go back and whick page it is. It has an arrow for back and forward. If the user cannot go back then the back arrow is not shown and vice versa. It provides a dots to show which of the pages the user is on using conditional styling.
+
+### `frontend/src/components/HallofFame`
+
+`HallOfFame/HallOfFamePage.tsx` This file contains the page component for the game's highscores. On the page load it will call the api for the current highscores. It will show a list of the highscores filtered by difficulty. It also provides tabs to change the difficulty.
+
+`HallOfFame/ScoreListItem.tsx` This component will display an individual highscore item. It accepts a time, username, idx (to provide the table style coloring effect) and an optional image.
+
+`HallOfFame/Tab.tsx` The component to display the tab. It has an active prop and an onclick handler which is passed in. It will apply the stying for the element.
+
+### `frontend/src/components/Layouts`
+
+This folder contains all the components responsible for laying out each page
+
+`Layouts/BaseLayout.tsx` The base layout contains the default header of the application and an outlet to house the different pages of the application.
+
+`Layouts/DefaultHeader.tsx` This is the top bar of the UI. It will show the username if the current user is logged in. The UI features a dropdown menu which contains links to all the pages in the application. It also allows the user to login/register and logout depending on the login state of the user.
+
+### `frontend/src/components/Minesweeper`
+
 ## Conclusion
 
 I hope you enjoy using the app. Experiment with some of the error handling in the forms and using the game on mobile.

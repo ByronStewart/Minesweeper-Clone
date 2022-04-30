@@ -1,10 +1,10 @@
-import { IconContext } from "react-icons"
-import { GoChevronLeft, GoChevronRight } from "react-icons/go"
+import { IconContext } from "react-icons";
+import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 
 interface Props {
-  goForward: VoidFunction
-  goBack: VoidFunction
-  page: number
+  goForward: VoidFunction;
+  goBack: VoidFunction;
+  page: number;
 }
 
 export const Pagination: React.FC<Props> = ({ goBack, goForward, page }) => {
@@ -28,21 +28,21 @@ export const Pagination: React.FC<Props> = ({ goBack, goForward, page }) => {
         <div className="flex justify-start gap-3 items-center p-5 pl-8">
           <div
             className={`${
-              page == 0
+              page === 0
                 ? "bg-blue-500 border-blue-900"
                 : "bg-gray-500 border-gray-900"
             } w-5 h-5 rounded-full border `}
           ></div>
           <div
             className={`${
-              page == 1
+              page === 1
                 ? "bg-blue-500 border-blue-900"
                 : "bg-gray-500 border-gray-900"
             } w-5 h-5 rounded-full border `}
           ></div>
           <div
             className={`${
-              page == 2
+              page === 2
                 ? "bg-blue-500 border-blue-900"
                 : "bg-gray-500 border-gray-900"
             } w-5 h-5 rounded-full border `}
@@ -60,5 +60,5 @@ export const Pagination: React.FC<Props> = ({ goBack, goForward, page }) => {
         )}
       </IconContext.Provider>
     </div>
-  )
-}
+  );
+};

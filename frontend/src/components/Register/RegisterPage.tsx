@@ -1,18 +1,18 @@
-import { Field, Form, Formik } from "formik"
-import { GoMail, GoPerson } from "react-icons/go"
-import { Link, useNavigate } from "react-router-dom"
-import { InputField } from "../Forms/InputField"
-import { useAuth } from "../../Auth/useAuth"
-import * as Yup from "yup"
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "../../store"
-import { postGameScore } from "../../features/game-history/gameHistorySlice"
+import { Field, Form, Formik } from "formik";
+import { GoMail, GoPerson } from "react-icons/go";
+import { Link, useNavigate } from "react-router-dom";
+import { InputField } from "../Forms/InputField";
+import { useAuth } from "../../Auth/useAuth";
+import * as Yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { postGameScore } from "../../features/game-history/gameHistorySlice";
 
 const RegisterPage: React.FC = () => {
-  const currentGame = useSelector((state: RootState) => state.currentGame)
-  const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
-  const { register } = useAuth()
+  const currentGame = useSelector((state: RootState) => state.currentGame);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { register } = useAuth();
   return (
     <div className="bg-white mx-auto max-w-2xl pt-20 px-8 h-full">
       <h2 className="text-3xl font-semibold">Register</h2>
@@ -31,18 +31,18 @@ const RegisterPage: React.FC = () => {
           onSubmit={({ email, password, username }, helpers) => {
             register(username, email, password, (user, err) => {
               if (err) {
-                console.log(err)
+                console.log(err);
                 if (err.username) {
                   helpers.setErrors({
                     username: err.username,
                     email: err.email,
                     password: err.password,
-                  })
+                  });
                 }
-                return
+                return;
               }
               // post the game score on login
-              if (currentGame.gameState == "finishedsuccess") {
+              if (currentGame.gameState === "finishedsuccess") {
                 if (user) {
                   dispatch(
                     postGameScore({
@@ -51,13 +51,13 @@ const RegisterPage: React.FC = () => {
                       owner: user.username,
                       time: currentGame.gameProperties.time,
                     })
-                  )
+                  );
                 }
               }
               navigate("/", {
                 replace: true,
-              })
-            })
+              });
+            });
           }}
         >
           <Form>
@@ -95,7 +95,7 @@ const RegisterPage: React.FC = () => {
         </Formik>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RegisterPage
+export default RegisterPage;

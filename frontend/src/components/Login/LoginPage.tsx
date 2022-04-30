@@ -1,20 +1,20 @@
-import { Field, Form, Formik } from "formik"
-import { Link, Location, useLocation, useNavigate } from "react-router-dom"
-import { useAuth } from "../../Auth/useAuth"
-import * as Yup from "yup"
-import { InputField } from "../Forms/InputField"
-import { GoMail } from "react-icons/go"
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "../../store"
-import { postGameScore } from "../../features/game-history/gameHistorySlice"
+import { Field, Form, Formik } from "formik";
+import { Link, Location, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../Auth/useAuth";
+import * as Yup from "yup";
+import { InputField } from "../Forms/InputField";
+import { GoMail } from "react-icons/go";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { postGameScore } from "../../features/game-history/gameHistorySlice";
 
 const LoginPage: React.FC = () => {
-  const currentGame = useSelector((state: RootState) => state.currentGame)
-  const dispatch = useDispatch<AppDispatch>()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const auth = useAuth()
-  const from = (location.state as { from?: Location })?.from?.pathname || "/"
+  const currentGame = useSelector((state: RootState) => state.currentGame);
+  const dispatch = useDispatch<AppDispatch>();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const auth = useAuth();
+  const from = (location.state as { from?: Location })?.from?.pathname || "/";
   return (
     <div className="pt-20 px-8 h-full bg-white mx-auto max-w-2xl">
       <h2 className="text-3xl font-semibold">Sign In</h2>
@@ -31,14 +31,14 @@ const LoginPage: React.FC = () => {
           onSubmit={(values, helpers) => {
             auth.signIn(values.email, values.password, (user, err) => {
               if (err) {
-                console.log(err)
+                console.log(err);
                 helpers.setErrors({
                   email: err.detail,
-                })
-                return
+                });
+                return;
               }
               // post the game to the server
-              if (currentGame.gameState == "finishedsuccess") {
+              if (currentGame.gameState === "finishedsuccess") {
                 if (user) {
                   dispatch(
                     postGameScore({
@@ -47,11 +47,11 @@ const LoginPage: React.FC = () => {
                       owner: user.username,
                       time: currentGame.gameProperties.time,
                     })
-                  )
+                  );
                 }
               }
-              navigate("/game", { replace: true })
-            })
+              navigate(from, { replace: true });
+            });
           }}
         >
           <Form>
@@ -83,6 +83,6 @@ const LoginPage: React.FC = () => {
         </Formik>
       </div>
     </div>
-  )
-}
-export default LoginPage
+  );
+};
+export default LoginPage;

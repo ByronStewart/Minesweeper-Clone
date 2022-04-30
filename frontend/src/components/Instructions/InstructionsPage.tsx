@@ -1,18 +1,17 @@
-import { useReducer, useState } from "react"
-import { IconContext } from "react-icons"
-import { GoChevronLeft, GoChevronRight } from "react-icons/go"
-import { useSwipeable } from "react-swipeable"
-import { debounce } from "lodash"
-import { Pagination } from "./Pagination"
+import { useReducer } from "react";
+
+import { useSwipeable } from "react-swipeable";
+
+import { Pagination } from "./Pagination";
 
 type OnboardingState = {
-  page: number
-}
-type Direction = "back" | "forward"
+  page: number;
+};
+type Direction = "back" | "forward";
 
 type OnboardingAction = {
-  dir: Direction
-}
+  dir: Direction;
+};
 
 const reducer = (
   state: OnboardingState,
@@ -20,33 +19,33 @@ const reducer = (
 ): OnboardingState => {
   switch (action.dir) {
     case "back":
-      if (state.page == 0) {
-        return state
+      if (state.page === 0) {
+        return state;
       }
       return {
         page: state.page - 1,
-      }
+      };
     case "forward":
-      if (state.page == 2) {
-        return state
+      if (state.page === 2) {
+        return state;
       }
       return {
         page: state.page + 1,
-      }
+      };
   }
-}
+};
 
 export const InstructionsPage: React.FC = () => {
-  const [tabState, dispatchTabAction] = useReducer(reducer, { page: 0 })
+  const [tabState, dispatchTabAction] = useReducer(reducer, { page: 0 });
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
-      dispatchTabAction({ dir: "forward" })
+      dispatchTabAction({ dir: "forward" });
     },
     onSwipedRight: () => {
-      dispatchTabAction({ dir: "back" })
+      dispatchTabAction({ dir: "back" });
     },
     preventDefaultTouchmoveEvent: true,
-  })
+  });
   return (
     <div
       {...swipeHandlers}
@@ -67,10 +66,6 @@ export const InstructionsPage: React.FC = () => {
               tip: on mobile you can toggle between flagging and revealing on
               tap
             </p>
-            {/* <p>Swipe left to flag</p>
-            <p>Swipe right to clear</p>
-            <p>Swipe down to reveal</p>
-            <p>Swipe up to cancel</p> */}
           </div>
           <div
             className={`mx-10 text-lg ${tabState.page !== 1 ? "hidden" : ""}`}
@@ -96,5 +91,5 @@ export const InstructionsPage: React.FC = () => {
         page={tabState.page}
       />
     </div>
-  )
-}
+  );
+};
