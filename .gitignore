@@ -1,4 +1,7 @@
 
+# secrets
+etc
+
 # dependencies
 frontend/node_modules
 frontend/.pnp
