@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, ListCreateAPIView
 from api.models import MinesweeperScore, User
-from api.permissions import IsOwnerOrReadOnly
 from api.serializers import MinesweeperScoreSerializer, RegisterSerializer, UsernameTokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
