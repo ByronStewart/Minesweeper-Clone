@@ -21,9 +21,11 @@ import {
   IUser,
 } from "../interfaces/IAuth"
 
+import request from 'axios'
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { IErrorMessage } from "../interfaces/IMessage"
 import { api } from "../services/api/api"
+
 
 const authContext = createContext<IAuth>({
   user: false,
@@ -83,30 +85,27 @@ const useProvideAuth = (): IAuth => {
       err?: ILoginFailDTO & { status: number }
     ) => void
   ) => {
+    debugger
     try {
-      const response = await fetch(LOGIN_ROUTE, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const response = await api.post<ILoginSuccessDTO>(LOGIN_ROUTE, {
+        email,
+        password,
       })
-      if (response.ok) {
-        const data: ILoginSuccessDTO = await response.json()
-        const user = handleLoginUser(data)
-        callback(user)
+      const user = handleLoginUser(response.data)
+      callback(user)
+    } catch (err) {
+      let error: ILoginFailDTO;
+      let status: number
+      if (request.isAxiosError(err) && err.response) {
+        error =  err.response?.data 
+        status = err.response?.status
       } else {
-        const error: ILoginFailDTO = await response.json()
-        setUser(false)
-        callback(false, { ...error, status: response.status })
+        error = {detail: "Network Error"}
+        status = 500
       }
-    } catch (error) {
-      console.error(error)
+      callback(false, { ...error, status })
+      console.error(err)
       signOut()
-      callback(false, { detail: "something went wrong", status: -1 })
     }
   }
 
@@ -145,6 +144,7 @@ const useProvideAuth = (): IAuth => {
       })
       if (response.ok) {
         const data: ILoginSuccessDTO = await response.json()
+        console.log(data)
         const user = handleLoginUser(data)
         callback(user)
       } else {
