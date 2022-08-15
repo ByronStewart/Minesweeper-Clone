@@ -1,6 +1,7 @@
 
 # secrets
 etc
+.env
 
 # dependencies
 frontend/node_modules
