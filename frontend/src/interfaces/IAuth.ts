@@ -1,4 +1,4 @@
-import { IErrorMessage } from "./IMessage";
+import { IErrorMessage } from "./IErrorMessage";
 
 export interface IAuth {
   user: IUser | false;

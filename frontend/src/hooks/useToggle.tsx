@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 
 /**
  * Provides a way to hold boolean state and toggle that state
@@ -7,10 +7,15 @@ import { useState } from "react"
  */
 export const useToggle = (
   initialState = false
-): [boolean, VoidFunction, VoidFunction, VoidFunction] => {
-  const [state, setState] = useState(initialState)
-  const toggleState = () => setState((state) => !state)
-  const setStateFalse = () => setState(false)
-  const setStateTrue = () => setState(true)
-  return [state, toggleState, setStateFalse, setStateTrue]
-}
+): {
+  state: boolean;
+  toggleState: VoidFunction;
+  setStateFalse: VoidFunction;
+  setStateTrue: VoidFunction;
+} => {
+  const [state, setState] = useState(initialState);
+  const toggleState = () => setState((state) => !state);
+  const setStateFalse = () => setState(false);
+  const setStateTrue = () => setState(true);
+  return { state, toggleState, setStateFalse, setStateTrue };
+};

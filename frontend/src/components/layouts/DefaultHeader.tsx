@@ -1,16 +1,20 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { useAuth } from "../../Auth/useAuth"
-import { GoHome, GoThreeBars, GoTriangleDown } from "react-icons/go"
-import { useToggle } from "../../hooks/useToggle"
-import { IconContext } from "react-icons"
-import { MainMenuButton, MainMenuLink } from "../MainMenuItem"
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../Auth/useAuth";
+import { GoHome, GoThreeBars, GoTriangleDown } from "react-icons/go";
+import { useToggle } from "../../hooks/useToggle";
+import { IconContext } from "react-icons";
+import { MainMenuButton, MainMenuLink } from "../MainMenuItem";
 
 interface Props {}
 
 export const DefaultHeader: React.FC<Props> = () => {
-  const auth = useAuth()
-  const [isMenuOpen, toggleMenuOpen, setMenuClosed] = useToggle(false)
+  const auth = useAuth();
+  const {
+    state: isMenuOpen,
+    setStateTrue: toggleMenuOpen,
+    setStateFalse: setMenuClosed,
+  } = useToggle(false);
   return (
     <IconContext.Provider
       value={{
@@ -67,5 +71,5 @@ export const DefaultHeader: React.FC<Props> = () => {
         </div>
       )}
     </IconContext.Provider>
-  )
-}
+  );
+};

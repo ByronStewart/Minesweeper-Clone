@@ -22,7 +22,7 @@ import {
 
 import request from "axios";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { IErrorMessage } from "../interfaces/IMessage";
+import { IErrorMessage } from "../interfaces/IErrorMessage";
 import { api } from "../services/api/api";
 
 const authContext = createContext<IAuth>({
