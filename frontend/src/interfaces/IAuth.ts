@@ -39,6 +39,9 @@ export interface ILoginSuccessDTO {
 
 export interface ILoginFailDTO {
   detail: string;
+  username?: string;
+  email?: string;
+  password?: string;
 }
 
 export interface IUser {
