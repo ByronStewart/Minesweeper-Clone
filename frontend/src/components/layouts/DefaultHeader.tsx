@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../Auth/useAuth";
+import { useAuth } from "../../auth/useAuth";
 import { GoHome, GoThreeBars, GoTriangleDown } from "react-icons/go";
 import { useToggle } from "../../hooks/useToggle";
 import { IconContext } from "react-icons";

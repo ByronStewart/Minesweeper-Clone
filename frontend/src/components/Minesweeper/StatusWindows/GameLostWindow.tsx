@@ -1,22 +1,22 @@
-import { BiTime } from "react-icons/bi"
+import { BiTime } from "react-icons/bi";
 import {
   formatMinsAndSeconds,
   secondsToMinsAndSeconds,
-} from "../../../utils/lib"
-import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../../../store"
-import { resetGame } from "../../../features/current-game/currentGameSlice"
+} from "../../../common/utils";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store";
+import { resetGame } from "../../../features/current-game/currentGameSlice";
 
 interface Props {}
 
 export const GameLostWindow: React.FC<Props> = () => {
   const time = useSelector(
     (state: RootState) => state.currentGame.gameProperties.time
-  )
+  );
   const { mins: currentMins, seconds: currentSeconds } =
-    secondsToMinsAndSeconds(time)
+    secondsToMinsAndSeconds(time);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   return (
     <div>
       <p className="text-xl">Time</p>
@@ -27,11 +27,11 @@ export const GameLostWindow: React.FC<Props> = () => {
       <button
         className="btn-modal mt-2"
         onClick={() => {
-          dispatch(resetGame())
+          dispatch(resetGame());
         }}
       >
         Try again
       </button>
     </div>
-  )
-}
+  );
+};

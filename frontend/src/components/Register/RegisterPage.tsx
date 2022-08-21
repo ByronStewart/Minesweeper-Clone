@@ -2,7 +2,7 @@ import { Field, Form, Formik } from "formik";
 import { GoMail, GoPerson } from "react-icons/go";
 import { Link, useNavigate } from "react-router-dom";
 import { InputField } from "../Forms/InputField";
-import { useAuth } from "../../Auth/useAuth";
+import { useAuth } from "../../auth/useAuth";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";

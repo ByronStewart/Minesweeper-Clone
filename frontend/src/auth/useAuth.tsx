@@ -11,18 +11,12 @@ import {
   REFRESH_INTERVAL,
   REFRESH_ROUTE,
   REGISTER_ROUTE,
-} from "../utils/constants";
-import {
-  IAuth,
-  ILoginFailDTO,
-  ILoginSuccessDTO,
-  IToken,
-  IUser,
-} from "../interfaces/IAuth";
+} from "../services/api/constants";
+import { IAuth, ILoginFailDTO, ILoginSuccessDTO, IToken, IUser } from "./IAuth";
 
 import request from "axios";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { IErrorMessage } from "../interfaces/IErrorMessage";
+import { IErrorMessage } from "./IAuth";
 import { api } from "../services/api/api";
 
 const authContext = createContext<IAuth>({

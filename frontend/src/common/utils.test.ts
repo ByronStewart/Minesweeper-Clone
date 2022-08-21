@@ -1,4 +1,4 @@
-import { formatMinsAndSeconds, secondsToMinsAndSeconds } from "./lib";
+import { formatMinsAndSeconds, secondsToMinsAndSeconds } from "./utils";
 
 describe("library tests", () => {
   describe("formatMinsAndSeconds", () => {

@@ -1,13 +1,13 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { ProvideAuth } from "./Auth/useAuth"
-import BaseLayout from "./components/layouts/BaseLayout"
-import MinesweeperPage from "./components/Minesweeper/MinesweeperPage"
-import { HallOfFamePage } from "./components/HallOfFame/HallOfFamePage"
-import IndexPage from "./components/Index/IndexPage"
-import { InstructionsPage } from "./components/Instructions/InstructionsPage"
-import LoginPage from "./components/Login/LoginPage"
-import RegisterPage from "./components/Register/RegisterPage"
-import { MinesweeperLayout } from "./components/layouts/GameLayout"
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ProvideAuth } from "./auth/useAuth";
+import BaseLayout from "./components/layouts/BaseLayout";
+import MinesweeperPage from "./components/Minesweeper/MinesweeperPage";
+import { HallOfFamePage } from "./components/HallOfFame/HallOfFamePage";
+import IndexPage from "./components/Index/IndexPage";
+import { InstructionsPage } from "./components/Instructions/InstructionsPage";
+import LoginPage from "./components/Login/LoginPage";
+import RegisterPage from "./components/Register/RegisterPage";
+import { MinesweeperLayout } from "./components/layouts/GameLayout";
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </ProvideAuth>
-  )
+  );
 }
 
-export default App
+export default App;

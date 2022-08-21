@@ -1,16 +1,16 @@
-import { FaBomb } from "react-icons/fa"
-import { MdTimer } from "react-icons/md"
-import { useDispatch, useSelector } from "react-redux"
-import { getOptions } from "../../../features/current-game/currentGameSlice"
-import { AppDispatch, RootState } from "../../../store"
-import { secondsToMinsAndSeconds } from "../../../utils/lib"
+import { FaBomb } from "react-icons/fa";
+import { MdTimer } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { getOptions } from "../../../features/current-game/currentGameSlice";
+import { AppDispatch, RootState } from "../../../store";
+import { secondsToMinsAndSeconds } from "../../../common/utils";
 
 export const MinesweeperStatusBar: React.FC = () => {
   const gameProperties = useSelector(
     (state: RootState) => state.currentGame.gameProperties
-  )
-  const { mins, seconds } = secondsToMinsAndSeconds(gameProperties.time)
-  const dispatch = useDispatch<AppDispatch>()
+  );
+  const { mins, seconds } = secondsToMinsAndSeconds(gameProperties.time);
+  const dispatch = useDispatch<AppDispatch>();
   return (
     <div className="flex justify-between text-2xl bg-slate-100 ">
       <div className="ml-8 py-5">
@@ -28,5 +28,5 @@ export const MinesweeperStatusBar: React.FC = () => {
         New Game
       </button>
     </div>
-  )
-}
+  );
+};

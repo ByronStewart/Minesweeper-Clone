@@ -1,6 +1,6 @@
 import { Field, Form, Formik } from "formik";
 import { Link, Location, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../Auth/useAuth";
+import { useAuth } from "../../auth/useAuth";
 import * as Yup from "yup";
 import { InputField } from "../Forms/InputField";
 import { GoMail } from "react-icons/go";

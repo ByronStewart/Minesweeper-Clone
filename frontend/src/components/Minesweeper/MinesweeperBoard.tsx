@@ -9,7 +9,7 @@ import {
 } from "../../features/current-game/currentGameSlice";
 import { RevealStates } from "../../features/current-game/interfaces";
 import { TileComponent } from "./Tile/TileComponent";
-import { useAuth } from "../../Auth/useAuth";
+import { useAuth } from "../../auth/useAuth";
 import { postGameScore } from "../../features/game-history/gameHistorySlice";
 
 type Props = {};

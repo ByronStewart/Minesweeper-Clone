@@ -1,5 +1,5 @@
-import { flatten, sampleSize } from "lodash"
-import { IMinesweeperOptions, Tile, RevealStates } from "./interfaces"
+import { flatten, sampleSize } from "lodash";
+import { IMinesweeperOptions, Tile, RevealStates } from "./interfaces";
 
 export function generateInitialBoard(
   rows: number,
@@ -7,9 +7,9 @@ export function generateInitialBoard(
   numMines: number
 ): Tile[][] {
   // create empty grid
-  const tiles: Tile[][] = []
+  const tiles: Tile[][] = [];
   for (let y = 0; y < rows; y++) {
-    tiles.push([])
+    tiles.push([]);
     for (let x = 0; x < cols; x++) {
       tiles[y].push({
         x,
@@ -17,26 +17,26 @@ export function generateInitialBoard(
         minesAdjacent: 0,
         revealState: RevealStates.HIDDEN,
         isHighlighted: false,
-      })
+      });
     }
   }
 
   // fill grid with mines
-  const mines = sampleSize(flatten(tiles), numMines)
+  const mines = sampleSize(flatten(tiles), numMines);
   for (const tile of mines) {
-    tile.minesAdjacent = -1
+    tile.minesAdjacent = -1;
     for (const neighbor of getNeighbours(tile.x, tile.y, tiles)) {
       if (neighbor.minesAdjacent !== -1) {
-        neighbor.minesAdjacent++
+        neighbor.minesAdjacent++;
       }
     }
   }
-  return tiles
+  return tiles;
 }
 
 export function getNeighbours(x: number, y: number, board: Tile[][]) {
-  const rows = board.length
-  const cols = board[y].length
+  const rows = board.length;
+  const cols = board[y].length;
   const options = [
     [-1, -1],
     [-1, 0],
@@ -46,21 +46,21 @@ export function getNeighbours(x: number, y: number, board: Tile[][]) {
     [1, -1],
     [0, -1],
     [0, 1],
-  ]
-  let neighbours: Tile[] = []
+  ];
+  let neighbours: Tile[] = [];
   for (const [dy, dx] of options) {
-    const ny = y + dy
-    const nx = x + dx
+    const ny = y + dy;
+    const nx = x + dx;
     if (ny < 0 || ny >= rows || nx < 0 || nx >= cols) {
-      continue
+      continue;
     }
-    neighbours.push(board[ny][nx])
+    neighbours.push(board[ny][nx]);
   }
-  return neighbours
+  return neighbours;
 }
 
 export function getInitialMinesRemainingFromOptions(
   options: IMinesweeperOptions
 ) {
-  return options.numMines
+  return options.numMines;
 }
