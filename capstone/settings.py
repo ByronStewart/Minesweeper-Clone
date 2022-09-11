@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # load environment variables
 from dotenv import load_dotenv
@@ -25,16 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "pv!=2&zce^n^!#3x$h924bih+j39jaf8yyudse9a60*6do&lu2"
+SECRET_KEY = os.environ.get('SECRET_KEY', default="pv!=2&zce^n^!#3x$h924bih+j39jaf8yyudse9a60*6do&lu2")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.environ.get("RUNNING_ENV", default="dev") == "dev" else False
 
-if 'SECRET_KEY' in os.environ:
-    SECRET_KEY = os.environ['SECRET_KEY']
-    DEBUG = False
-
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [os.environ.get("RAILWAY_STATIC_URL")]
 
 AUTH_USER_MODEL = 'api.User'
 
@@ -93,25 +90,11 @@ WSGI_APPLICATION = 'capstone.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default=os.environ.get('PG_CONN'), conn_max_age=600)
 }
 
-
-if 'SECRET_KEY' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ["PGDATABASE"],
-            'USER': os.environ["PGUSER"],
-            'PASSWORD': os.environ["PGPASSWORD"],
-            'HOST': os.environ["PGHOST"],
-            'PORT': os.environ["PGPORT"],
-        }
-    }
 
 
 # Password validation
